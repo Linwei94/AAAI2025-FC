@@ -13,6 +13,23 @@
             "justMyCode": true,
             "args": [
                 "--model", "resnet18",
+                "--loss", "mmce"
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0",
+                "WANDB_MODE": "disabled"
+            }
+        },
+        {
+            "name": "c100",
+            "type": "python",
+            "request": "launch",
+            "program": "train.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--model", "resnet18",
+                "--dataset", "cifar100"
             ],
             "env": {
                 "CUDA_VISIBLE_DEVICES": "0",
