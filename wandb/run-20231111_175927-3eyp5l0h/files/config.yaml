@@ -1,0 +1,134 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.3
+    framework: huggingface
+    huggingface_version: 4.33.2
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.9.12
+    start_time: 1699685967.266777
+    t:
+      1:
+      - 1
+      - 5
+      - 11
+      - 41
+      - 49
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 11
+      - 41
+      - 49
+      - 53
+      - 55
+      3:
+      - 13
+      - 16
+      - 23
+      4: 3.9.12
+      5: 0.13.3
+      6: 4.33.2
+      8:
+      - 5
+data_aug:
+  desc: null
+  value: true
+dataset:
+  desc: null
+  value: cifar10
+dataset_root:
+  desc: null
+  value: ./
+epoch:
+  desc: null
+  value: 200
+first_milestone:
+  desc: null
+  value: 100
+gamma:
+  desc: null
+  value: 1.0
+gamma2:
+  desc: null
+  value: 1.0
+gamma3:
+  desc: null
+  value: 1.0
+gamma_schedule:
+  desc: null
+  value: 0
+gamma_schedule_step1:
+  desc: null
+  value: 100
+gamma_schedule_step2:
+  desc: null
+  value: 250
+gpu:
+  desc: null
+  value: true
+lamda:
+  desc: null
+  value: 1.0
+learning_rate:
+  desc: null
+  value: 0.1
+load:
+  desc: null
+  value: false
+load_loc:
+  desc: null
+  value: ./
+log_interval:
+  desc: null
+  value: 50
+loss_function:
+  desc: null
+  value: cross_entropy
+loss_mean:
+  desc: null
+  value: false
+model:
+  desc: null
+  value: resnet18
+model_name:
+  desc: null
+  value: null
+momentum:
+  desc: null
+  value: 0.9
+name:
+  desc: null
+  value: resnet18_ce
+nesterov:
+  desc: null
+  value: false
+optimiser:
+  desc: null
+  value: sgd
+save_interval:
+  desc: null
+  value: 50
+save_loc:
+  desc: null
+  value: ./
+saved_model_name:
+  desc: null
+  value: resnet50_cross_entropy_350.model
+second_milestone:
+  desc: null
+  value: 150
+test_batch_size:
+  desc: null
+  value: 128
+train_batch_size:
+  desc: null
+  value: 128
+weight_decay:
+  desc: null
+  value: 0.0005

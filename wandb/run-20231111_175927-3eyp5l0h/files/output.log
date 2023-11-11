@@ -1,0 +1,763 @@
+CUDA set: True
+Files already downloaded and verified
+Files already downloaded and verified
+Train Epoch: 0 [0/45056 (0%)]	Loss: 310.669739
+/home/linwei/anaconda3/lib/python3.9/site-packages/torch/optim/lr_scheduler.py:136: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Train Epoch: 0 [1280/45056 (3%)]	Loss: 290.591980
+Train Epoch: 0 [2560/45056 (6%)]	Loss: 286.717682
+Train Epoch: 0 [3840/45056 (9%)]	Loss: 271.478577
+Train Epoch: 0 [5120/45056 (11%)]	Loss: 266.801819
+Train Epoch: 0 [6400/45056 (14%)]	Loss: 247.078827
+Train Epoch: 0 [7680/45056 (17%)]	Loss: 228.743683
+Train Epoch: 0 [8960/45056 (20%)]	Loss: 301.620239
+Train Epoch: 0 [10240/45056 (23%)]	Loss: 229.953491
+Train Epoch: 0 [11520/45056 (26%)]	Loss: 225.503738
+Train Epoch: 0 [12800/45056 (28%)]	Loss: 228.620789
+Train Epoch: 0 [14080/45056 (31%)]	Loss: 203.935181
+Train Epoch: 0 [15360/45056 (34%)]	Loss: 210.758423
+Train Epoch: 0 [16640/45056 (37%)]	Loss: 241.322830
+Train Epoch: 0 [17920/45056 (40%)]	Loss: 214.373581
+Train Epoch: 0 [19200/45056 (43%)]	Loss: 213.696671
+Train Epoch: 0 [20480/45056 (45%)]	Loss: 233.257019
+Train Epoch: 0 [21760/45056 (48%)]	Loss: 216.051163
+Train Epoch: 0 [23040/45056 (51%)]	Loss: 199.387909
+Train Epoch: 0 [24320/45056 (54%)]	Loss: 207.405670
+Train Epoch: 0 [25600/45056 (57%)]	Loss: 195.204315
+Train Epoch: 0 [26880/45056 (60%)]	Loss: 208.930923
+Train Epoch: 0 [28160/45056 (62%)]	Loss: 223.853439
+Train Epoch: 0 [29440/45056 (65%)]	Loss: 193.423935
+Train Epoch: 0 [30720/45056 (68%)]	Loss: 180.664780
+Train Epoch: 0 [32000/45056 (71%)]	Loss: 197.335739
+Train Epoch: 0 [33280/45056 (74%)]	Loss: 181.784195
+Train Epoch: 0 [34560/45056 (77%)]	Loss: 198.507355
+Train Epoch: 0 [35840/45056 (80%)]	Loss: 176.402893
+Train Epoch: 0 [37120/45056 (82%)]	Loss: 179.460327
+Train Epoch: 0 [38400/45056 (85%)]	Loss: 176.605347
+Train Epoch: 0 [39680/45056 (88%)]	Loss: 164.807266
+Train Epoch: 0 [40960/45056 (91%)]	Loss: 175.717667
+Train Epoch: 0 [42240/45056 (94%)]	Loss: 210.968323
+Train Epoch: 0 [43520/45056 (97%)]	Loss: 174.190369
+Train Epoch: 0 [44800/45056 (99%)]	Loss: 160.505798
+====> Epoch: 0 Average loss: 1.6999
+Epoch: 1/200  Origin test Acc: 0.4667  Origin Pre test ECE: 0.13560043275356293
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Train Epoch: 1 [0/45056 (0%)]	Loss: 161.513184
+Train Epoch: 1 [1280/45056 (3%)]	Loss: 158.789551
+Train Epoch: 1 [2560/45056 (6%)]	Loss: 141.228882
+Train Epoch: 1 [3840/45056 (9%)]	Loss: 182.426514
+Train Epoch: 1 [5120/45056 (11%)]	Loss: 141.944336
+Train Epoch: 1 [6400/45056 (14%)]	Loss: 155.185989
+Train Epoch: 1 [7680/45056 (17%)]	Loss: 155.680115
+Train Epoch: 1 [8960/45056 (20%)]	Loss: 141.763931
+Train Epoch: 1 [10240/45056 (23%)]	Loss: 133.005127
+Train Epoch: 1 [11520/45056 (26%)]	Loss: 144.795929
+Train Epoch: 1 [12800/45056 (28%)]	Loss: 152.396835
+Train Epoch: 1 [14080/45056 (31%)]	Loss: 157.030426
+Train Epoch: 1 [15360/45056 (34%)]	Loss: 147.604630
+Train Epoch: 1 [16640/45056 (37%)]	Loss: 155.990234
+Train Epoch: 1 [17920/45056 (40%)]	Loss: 136.888016
+Train Epoch: 1 [19200/45056 (43%)]	Loss: 167.248627
+Train Epoch: 1 [20480/45056 (45%)]	Loss: 152.767212
+Train Epoch: 1 [21760/45056 (48%)]	Loss: 146.436630
+Train Epoch: 1 [23040/45056 (51%)]	Loss: 137.788559
+Train Epoch: 1 [24320/45056 (54%)]	Loss: 137.574066
+Train Epoch: 1 [25600/45056 (57%)]	Loss: 132.678406
+Train Epoch: 1 [26880/45056 (60%)]	Loss: 123.248894
+Train Epoch: 1 [28160/45056 (62%)]	Loss: 127.088623
+Train Epoch: 1 [29440/45056 (65%)]	Loss: 123.395500
+Train Epoch: 1 [30720/45056 (68%)]	Loss: 149.877731
+Train Epoch: 1 [32000/45056 (71%)]	Loss: 130.689133
+Train Epoch: 1 [33280/45056 (74%)]	Loss: 167.388779
+Train Epoch: 1 [34560/45056 (77%)]	Loss: 134.219742
+Train Epoch: 1 [35840/45056 (80%)]	Loss: 143.702042
+Train Epoch: 1 [37120/45056 (82%)]	Loss: 133.545776
+Train Epoch: 1 [38400/45056 (85%)]	Loss: 146.474228
+Train Epoch: 1 [39680/45056 (88%)]	Loss: 147.458862
+Train Epoch: 1 [40960/45056 (91%)]	Loss: 134.772980
+Train Epoch: 1 [42240/45056 (94%)]	Loss: 131.261398
+Train Epoch: 1 [43520/45056 (97%)]	Loss: 132.396820
+Train Epoch: 1 [44800/45056 (99%)]	Loss: 123.961365
+====> Epoch: 1 Average loss: 1.1358
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 2/200  Origin test Acc: 0.6397  Origin Pre test ECE: 0.04087243601679802
+Train Epoch: 2 [0/45056 (0%)]	Loss: 128.175583
+Train Epoch: 2 [1280/45056 (3%)]	Loss: 116.447647
+Train Epoch: 2 [2560/45056 (6%)]	Loss: 118.277542
+Train Epoch: 2 [3840/45056 (9%)]	Loss: 118.162079
+Train Epoch: 2 [5120/45056 (11%)]	Loss: 112.996956
+Train Epoch: 2 [6400/45056 (14%)]	Loss: 120.479462
+Train Epoch: 2 [7680/45056 (17%)]	Loss: 90.890785
+Train Epoch: 2 [8960/45056 (20%)]	Loss: 104.833885
+Train Epoch: 2 [10240/45056 (23%)]	Loss: 111.581932
+Train Epoch: 2 [11520/45056 (26%)]	Loss: 111.032684
+Train Epoch: 2 [12800/45056 (28%)]	Loss: 116.264236
+Train Epoch: 2 [14080/45056 (31%)]	Loss: 93.551216
+Train Epoch: 2 [15360/45056 (34%)]	Loss: 118.082275
+Train Epoch: 2 [16640/45056 (37%)]	Loss: 100.514099
+Train Epoch: 2 [17920/45056 (40%)]	Loss: 128.493500
+Train Epoch: 2 [19200/45056 (43%)]	Loss: 109.761032
+Train Epoch: 2 [20480/45056 (45%)]	Loss: 119.230438
+Train Epoch: 2 [21760/45056 (48%)]	Loss: 130.763336
+Train Epoch: 2 [23040/45056 (51%)]	Loss: 126.078369
+Train Epoch: 2 [24320/45056 (54%)]	Loss: 115.970627
+Train Epoch: 2 [25600/45056 (57%)]	Loss: 107.666733
+Train Epoch: 2 [26880/45056 (60%)]	Loss: 114.092163
+Train Epoch: 2 [28160/45056 (62%)]	Loss: 96.271088
+Train Epoch: 2 [29440/45056 (65%)]	Loss: 112.690063
+Train Epoch: 2 [30720/45056 (68%)]	Loss: 124.758308
+Train Epoch: 2 [32000/45056 (71%)]	Loss: 95.062042
+Train Epoch: 2 [33280/45056 (74%)]	Loss: 97.516220
+Train Epoch: 2 [34560/45056 (77%)]	Loss: 122.276176
+Train Epoch: 2 [35840/45056 (80%)]	Loss: 101.789406
+Train Epoch: 2 [37120/45056 (82%)]	Loss: 136.099121
+Train Epoch: 2 [38400/45056 (85%)]	Loss: 93.619385
+Train Epoch: 2 [39680/45056 (88%)]	Loss: 107.481644
+Train Epoch: 2 [40960/45056 (91%)]	Loss: 109.041016
+Train Epoch: 2 [42240/45056 (94%)]	Loss: 139.479355
+Train Epoch: 2 [43520/45056 (97%)]	Loss: 96.414101
+Train Epoch: 2 [44800/45056 (99%)]	Loss: 83.684181
+====> Epoch: 2 Average loss: 0.8866
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 3/200  Origin test Acc: 0.6464  Origin Pre test ECE: 0.12061131000518799
+Train Epoch: 3 [0/45056 (0%)]	Loss: 112.599808
+Train Epoch: 3 [1280/45056 (3%)]	Loss: 103.347824
+Train Epoch: 3 [2560/45056 (6%)]	Loss: 113.420670
+Train Epoch: 3 [3840/45056 (9%)]	Loss: 86.560692
+Train Epoch: 3 [5120/45056 (11%)]	Loss: 88.730698
+Train Epoch: 3 [6400/45056 (14%)]	Loss: 106.512260
+Train Epoch: 3 [7680/45056 (17%)]	Loss: 84.121796
+Train Epoch: 3 [8960/45056 (20%)]	Loss: 129.702301
+Train Epoch: 3 [10240/45056 (23%)]	Loss: 99.073906
+Train Epoch: 3 [11520/45056 (26%)]	Loss: 75.490547
+Train Epoch: 3 [12800/45056 (28%)]	Loss: 96.124649
+Train Epoch: 3 [14080/45056 (31%)]	Loss: 99.427521
+Train Epoch: 3 [15360/45056 (34%)]	Loss: 100.092461
+Train Epoch: 3 [16640/45056 (37%)]	Loss: 98.284203
+Train Epoch: 3 [17920/45056 (40%)]	Loss: 86.069427
+Train Epoch: 3 [19200/45056 (43%)]	Loss: 116.134483
+Train Epoch: 3 [20480/45056 (45%)]	Loss: 102.429817
+Train Epoch: 3 [21760/45056 (48%)]	Loss: 76.944359
+Train Epoch: 3 [23040/45056 (51%)]	Loss: 93.482758
+Train Epoch: 3 [24320/45056 (54%)]	Loss: 109.930634
+Train Epoch: 3 [25600/45056 (57%)]	Loss: 118.083252
+Train Epoch: 3 [26880/45056 (60%)]	Loss: 90.612556
+Train Epoch: 3 [28160/45056 (62%)]	Loss: 106.482567
+Train Epoch: 3 [29440/45056 (65%)]	Loss: 79.641953
+Train Epoch: 3 [30720/45056 (68%)]	Loss: 81.112732
+Train Epoch: 3 [32000/45056 (71%)]	Loss: 104.597931
+Train Epoch: 3 [33280/45056 (74%)]	Loss: 88.419212
+Train Epoch: 3 [34560/45056 (77%)]	Loss: 98.524757
+Train Epoch: 3 [35840/45056 (80%)]	Loss: 76.461678
+Train Epoch: 3 [37120/45056 (82%)]	Loss: 56.071957
+Train Epoch: 3 [38400/45056 (85%)]	Loss: 84.762947
+Train Epoch: 3 [39680/45056 (88%)]	Loss: 96.885773
+Train Epoch: 3 [40960/45056 (91%)]	Loss: 88.842865
+Train Epoch: 3 [42240/45056 (94%)]	Loss: 76.512093
+Train Epoch: 3 [43520/45056 (97%)]	Loss: 93.792061
+Train Epoch: 3 [44800/45056 (99%)]	Loss: 76.378433
+====> Epoch: 3 Average loss: 0.7314
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 4/200  Origin test Acc: 0.7268  Origin Pre test ECE: 0.02910417877137661
+Train Epoch: 4 [0/45056 (0%)]	Loss: 74.494827
+Train Epoch: 4 [1280/45056 (3%)]	Loss: 72.974823
+Train Epoch: 4 [2560/45056 (6%)]	Loss: 71.259361
+Train Epoch: 4 [3840/45056 (9%)]	Loss: 66.587868
+Train Epoch: 4 [5120/45056 (11%)]	Loss: 83.572289
+Train Epoch: 4 [6400/45056 (14%)]	Loss: 76.740082
+Train Epoch: 4 [7680/45056 (17%)]	Loss: 105.566986
+Train Epoch: 4 [8960/45056 (20%)]	Loss: 78.359138
+Train Epoch: 4 [10240/45056 (23%)]	Loss: 95.821304
+Train Epoch: 4 [11520/45056 (26%)]	Loss: 90.397888
+Train Epoch: 4 [12800/45056 (28%)]	Loss: 87.577263
+Train Epoch: 4 [14080/45056 (31%)]	Loss: 85.209702
+Train Epoch: 4 [15360/45056 (34%)]	Loss: 85.981445
+Train Epoch: 4 [16640/45056 (37%)]	Loss: 76.262970
+Train Epoch: 4 [17920/45056 (40%)]	Loss: 64.250389
+Train Epoch: 4 [19200/45056 (43%)]	Loss: 52.974087
+Train Epoch: 4 [20480/45056 (45%)]	Loss: 75.091736
+Train Epoch: 4 [21760/45056 (48%)]	Loss: 87.394241
+Train Epoch: 4 [23040/45056 (51%)]	Loss: 95.393425
+Train Epoch: 4 [24320/45056 (54%)]	Loss: 74.323692
+Train Epoch: 4 [25600/45056 (57%)]	Loss: 76.596817
+Train Epoch: 4 [26880/45056 (60%)]	Loss: 82.975998
+Train Epoch: 4 [28160/45056 (62%)]	Loss: 81.652481
+Train Epoch: 4 [29440/45056 (65%)]	Loss: 72.014366
+Train Epoch: 4 [30720/45056 (68%)]	Loss: 73.544876
+Train Epoch: 4 [32000/45056 (71%)]	Loss: 91.431770
+Train Epoch: 4 [33280/45056 (74%)]	Loss: 109.208153
+Train Epoch: 4 [34560/45056 (77%)]	Loss: 75.009750
+Train Epoch: 4 [35840/45056 (80%)]	Loss: 94.331230
+Train Epoch: 4 [37120/45056 (82%)]	Loss: 76.074715
+Train Epoch: 4 [38400/45056 (85%)]	Loss: 83.173019
+Train Epoch: 4 [39680/45056 (88%)]	Loss: 76.877808
+Train Epoch: 4 [40960/45056 (91%)]	Loss: 74.658585
+Train Epoch: 4 [42240/45056 (94%)]	Loss: 71.620781
+Train Epoch: 4 [43520/45056 (97%)]	Loss: 81.495110
+Train Epoch: 4 [44800/45056 (99%)]	Loss: 69.538986
+====> Epoch: 4 Average loss: 0.6461
+Epoch: 5/200  Origin test Acc: 0.7516  Origin Pre test ECE: 0.042913805693387985
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Train Epoch: 5 [0/45056 (0%)]	Loss: 63.739479
+Train Epoch: 5 [1280/45056 (3%)]	Loss: 58.139637
+Train Epoch: 5 [2560/45056 (6%)]	Loss: 79.551071
+Train Epoch: 5 [3840/45056 (9%)]	Loss: 66.847221
+Train Epoch: 5 [5120/45056 (11%)]	Loss: 70.258812
+Train Epoch: 5 [6400/45056 (14%)]	Loss: 84.894485
+Train Epoch: 5 [7680/45056 (17%)]	Loss: 68.350822
+Train Epoch: 5 [8960/45056 (20%)]	Loss: 84.097771
+Train Epoch: 5 [10240/45056 (23%)]	Loss: 67.081375
+Train Epoch: 5 [11520/45056 (26%)]	Loss: 64.190392
+Train Epoch: 5 [12800/45056 (28%)]	Loss: 60.945808
+Train Epoch: 5 [14080/45056 (31%)]	Loss: 68.837029
+Train Epoch: 5 [15360/45056 (34%)]	Loss: 78.819557
+Train Epoch: 5 [16640/45056 (37%)]	Loss: 87.258049
+Train Epoch: 5 [17920/45056 (40%)]	Loss: 64.706245
+Train Epoch: 5 [19200/45056 (43%)]	Loss: 62.987396
+Train Epoch: 5 [20480/45056 (45%)]	Loss: 92.704521
+Train Epoch: 5 [21760/45056 (48%)]	Loss: 54.578705
+Train Epoch: 5 [23040/45056 (51%)]	Loss: 74.507263
+Train Epoch: 5 [24320/45056 (54%)]	Loss: 72.553093
+Train Epoch: 5 [25600/45056 (57%)]	Loss: 83.536987
+Train Epoch: 5 [26880/45056 (60%)]	Loss: 68.070900
+Train Epoch: 5 [28160/45056 (62%)]	Loss: 86.666977
+Train Epoch: 5 [29440/45056 (65%)]	Loss: 61.450108
+Train Epoch: 5 [30720/45056 (68%)]	Loss: 63.630772
+Train Epoch: 5 [32000/45056 (71%)]	Loss: 85.245720
+Train Epoch: 5 [33280/45056 (74%)]	Loss: 76.505127
+Train Epoch: 5 [34560/45056 (77%)]	Loss: 66.445503
+Train Epoch: 5 [35840/45056 (80%)]	Loss: 65.223923
+Train Epoch: 5 [37120/45056 (82%)]	Loss: 75.942528
+Train Epoch: 5 [38400/45056 (85%)]	Loss: 66.917984
+Train Epoch: 5 [39680/45056 (88%)]	Loss: 72.015312
+Train Epoch: 5 [40960/45056 (91%)]	Loss: 78.726730
+Train Epoch: 5 [42240/45056 (94%)]	Loss: 65.554466
+Train Epoch: 5 [43520/45056 (97%)]	Loss: 62.908550
+Train Epoch: 5 [44800/45056 (99%)]	Loss: 68.232552
+====> Epoch: 5 Average loss: 0.5840
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 6/200  Origin test Acc: 0.7502  Origin Pre test ECE: 0.06445053219795227
+Train Epoch: 6 [0/45056 (0%)]	Loss: 73.700226
+Train Epoch: 6 [1280/45056 (3%)]	Loss: 69.455368
+Train Epoch: 6 [2560/45056 (6%)]	Loss: 72.880875
+Train Epoch: 6 [3840/45056 (9%)]	Loss: 58.182232
+Train Epoch: 6 [5120/45056 (11%)]	Loss: 74.451820
+Train Epoch: 6 [6400/45056 (14%)]	Loss: 73.035561
+Train Epoch: 6 [7680/45056 (17%)]	Loss: 65.600159
+Train Epoch: 6 [8960/45056 (20%)]	Loss: 44.725193
+Train Epoch: 6 [10240/45056 (23%)]	Loss: 63.550323
+Train Epoch: 6 [11520/45056 (26%)]	Loss: 80.847305
+Train Epoch: 6 [12800/45056 (28%)]	Loss: 60.269779
+Train Epoch: 6 [14080/45056 (31%)]	Loss: 61.261887
+Train Epoch: 6 [15360/45056 (34%)]	Loss: 75.063698
+Train Epoch: 6 [16640/45056 (37%)]	Loss: 67.979446
+Train Epoch: 6 [17920/45056 (40%)]	Loss: 85.916298
+Train Epoch: 6 [19200/45056 (43%)]	Loss: 56.392166
+Train Epoch: 6 [20480/45056 (45%)]	Loss: 66.124855
+Train Epoch: 6 [21760/45056 (48%)]	Loss: 76.617279
+Train Epoch: 6 [23040/45056 (51%)]	Loss: 45.325230
+Train Epoch: 6 [24320/45056 (54%)]	Loss: 79.003479
+Train Epoch: 6 [25600/45056 (57%)]	Loss: 41.956474
+Train Epoch: 6 [26880/45056 (60%)]	Loss: 80.234062
+Train Epoch: 6 [28160/45056 (62%)]	Loss: 79.111580
+Train Epoch: 6 [29440/45056 (65%)]	Loss: 71.182487
+Train Epoch: 6 [30720/45056 (68%)]	Loss: 50.998207
+Train Epoch: 6 [32000/45056 (71%)]	Loss: 77.499802
+Train Epoch: 6 [33280/45056 (74%)]	Loss: 89.487923
+Train Epoch: 6 [34560/45056 (77%)]	Loss: 55.917435
+Train Epoch: 6 [35840/45056 (80%)]	Loss: 62.938801
+Train Epoch: 6 [37120/45056 (82%)]	Loss: 78.411652
+Train Epoch: 6 [38400/45056 (85%)]	Loss: 78.158295
+Train Epoch: 6 [39680/45056 (88%)]	Loss: 70.849617
+Train Epoch: 6 [40960/45056 (91%)]	Loss: 65.746368
+Train Epoch: 6 [42240/45056 (94%)]	Loss: 84.913750
+Train Epoch: 6 [43520/45056 (97%)]	Loss: 44.856613
+Train Epoch: 6 [44800/45056 (99%)]	Loss: 55.295185
+====> Epoch: 6 Average loss: 0.5426
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 7/200  Origin test Acc: 0.6962  Origin Pre test ECE: 0.11480073630809784
+Train Epoch: 7 [0/45056 (0%)]	Loss: 88.490746
+Train Epoch: 7 [1280/45056 (3%)]	Loss: 62.117275
+Train Epoch: 7 [2560/45056 (6%)]	Loss: 68.972961
+Train Epoch: 7 [3840/45056 (9%)]	Loss: 50.319481
+Train Epoch: 7 [5120/45056 (11%)]	Loss: 77.776520
+Train Epoch: 7 [6400/45056 (14%)]	Loss: 47.970509
+Train Epoch: 7 [7680/45056 (17%)]	Loss: 59.746693
+Train Epoch: 7 [8960/45056 (20%)]	Loss: 67.704384
+Train Epoch: 7 [10240/45056 (23%)]	Loss: 68.657875
+Train Epoch: 7 [11520/45056 (26%)]	Loss: 70.062492
+Train Epoch: 7 [12800/45056 (28%)]	Loss: 64.488777
+Train Epoch: 7 [14080/45056 (31%)]	Loss: 67.992775
+Train Epoch: 7 [15360/45056 (34%)]	Loss: 50.552448
+Train Epoch: 7 [16640/45056 (37%)]	Loss: 70.348358
+Train Epoch: 7 [17920/45056 (40%)]	Loss: 68.780144
+Train Epoch: 7 [19200/45056 (43%)]	Loss: 61.560574
+Train Epoch: 7 [20480/45056 (45%)]	Loss: 60.124058
+Train Epoch: 7 [21760/45056 (48%)]	Loss: 59.136253
+Train Epoch: 7 [23040/45056 (51%)]	Loss: 77.510735
+Train Epoch: 7 [24320/45056 (54%)]	Loss: 62.013248
+Train Epoch: 7 [25600/45056 (57%)]	Loss: 31.534330
+Train Epoch: 7 [26880/45056 (60%)]	Loss: 64.477913
+Train Epoch: 7 [28160/45056 (62%)]	Loss: 69.559242
+Train Epoch: 7 [29440/45056 (65%)]	Loss: 58.574257
+Train Epoch: 7 [30720/45056 (68%)]	Loss: 71.659233
+Train Epoch: 7 [32000/45056 (71%)]	Loss: 63.483696
+Train Epoch: 7 [33280/45056 (74%)]	Loss: 63.903236
+Train Epoch: 7 [34560/45056 (77%)]	Loss: 63.610031
+Train Epoch: 7 [35840/45056 (80%)]	Loss: 79.224731
+Train Epoch: 7 [37120/45056 (82%)]	Loss: 66.839577
+Train Epoch: 7 [38400/45056 (85%)]	Loss: 78.617943
+Train Epoch: 7 [39680/45056 (88%)]	Loss: 86.093269
+Train Epoch: 7 [40960/45056 (91%)]	Loss: 59.551781
+Train Epoch: 7 [42240/45056 (94%)]	Loss: 67.968414
+Train Epoch: 7 [43520/45056 (97%)]	Loss: 72.630775
+Train Epoch: 7 [44800/45056 (99%)]	Loss: 63.609287
+====> Epoch: 7 Average loss: 0.5102
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 8/200  Origin test Acc: 0.7986  Origin Pre test ECE: 0.04333586245775223
+Train Epoch: 8 [0/45056 (0%)]	Loss: 47.382221
+Train Epoch: 8 [1280/45056 (3%)]	Loss: 63.523918
+Train Epoch: 8 [2560/45056 (6%)]	Loss: 76.577538
+Train Epoch: 8 [3840/45056 (9%)]	Loss: 53.930473
+Train Epoch: 8 [5120/45056 (11%)]	Loss: 69.925789
+Train Epoch: 8 [6400/45056 (14%)]	Loss: 54.451805
+Train Epoch: 8 [7680/45056 (17%)]	Loss: 55.670025
+Train Epoch: 8 [8960/45056 (20%)]	Loss: 76.873558
+Train Epoch: 8 [10240/45056 (23%)]	Loss: 52.528492
+Train Epoch: 8 [11520/45056 (26%)]	Loss: 80.190102
+Train Epoch: 8 [12800/45056 (28%)]	Loss: 56.539581
+Train Epoch: 8 [14080/45056 (31%)]	Loss: 53.495766
+Train Epoch: 8 [15360/45056 (34%)]	Loss: 68.484550
+Train Epoch: 8 [16640/45056 (37%)]	Loss: 52.592739
+Train Epoch: 8 [17920/45056 (40%)]	Loss: 43.476669
+Train Epoch: 8 [19200/45056 (43%)]	Loss: 81.608459
+Train Epoch: 8 [20480/45056 (45%)]	Loss: 65.075287
+Train Epoch: 8 [21760/45056 (48%)]	Loss: 48.541042
+Train Epoch: 8 [23040/45056 (51%)]	Loss: 61.041565
+Train Epoch: 8 [24320/45056 (54%)]	Loss: 67.715240
+Train Epoch: 8 [25600/45056 (57%)]	Loss: 70.051361
+Train Epoch: 8 [26880/45056 (60%)]	Loss: 72.166931
+Train Epoch: 8 [28160/45056 (62%)]	Loss: 55.476189
+Train Epoch: 8 [29440/45056 (65%)]	Loss: 63.965218
+Train Epoch: 8 [30720/45056 (68%)]	Loss: 47.776642
+Train Epoch: 8 [32000/45056 (71%)]	Loss: 89.844116
+Train Epoch: 8 [33280/45056 (74%)]	Loss: 61.573944
+Train Epoch: 8 [34560/45056 (77%)]	Loss: 48.174747
+Train Epoch: 8 [35840/45056 (80%)]	Loss: 63.453674
+Train Epoch: 8 [37120/45056 (82%)]	Loss: 65.739189
+Train Epoch: 8 [38400/45056 (85%)]	Loss: 58.596714
+Train Epoch: 8 [39680/45056 (88%)]	Loss: 61.790195
+Train Epoch: 8 [40960/45056 (91%)]	Loss: 66.750938
+Train Epoch: 8 [42240/45056 (94%)]	Loss: 98.982224
+Train Epoch: 8 [43520/45056 (97%)]	Loss: 63.148052
+Train Epoch: 8 [44800/45056 (99%)]	Loss: 60.225380
+====> Epoch: 8 Average loss: 0.4860
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 9/200  Origin test Acc: 0.7796  Origin Pre test ECE: 0.06036106497049332
+Train Epoch: 9 [0/45056 (0%)]	Loss: 63.260143
+Train Epoch: 9 [1280/45056 (3%)]	Loss: 57.772442
+Train Epoch: 9 [2560/45056 (6%)]	Loss: 57.394035
+Train Epoch: 9 [3840/45056 (9%)]	Loss: 65.218719
+Train Epoch: 9 [5120/45056 (11%)]	Loss: 75.467697
+Train Epoch: 9 [6400/45056 (14%)]	Loss: 52.336349
+Train Epoch: 9 [7680/45056 (17%)]	Loss: 47.954029
+Train Epoch: 9 [8960/45056 (20%)]	Loss: 78.954689
+Train Epoch: 9 [10240/45056 (23%)]	Loss: 57.951302
+Train Epoch: 9 [11520/45056 (26%)]	Loss: 43.216324
+Train Epoch: 9 [12800/45056 (28%)]	Loss: 57.970150
+Train Epoch: 9 [14080/45056 (31%)]	Loss: 49.269279
+Train Epoch: 9 [15360/45056 (34%)]	Loss: 60.966892
+Train Epoch: 9 [16640/45056 (37%)]	Loss: 52.141552
+Train Epoch: 9 [17920/45056 (40%)]	Loss: 53.521641
+Train Epoch: 9 [19200/45056 (43%)]	Loss: 48.192661
+Train Epoch: 9 [20480/45056 (45%)]	Loss: 70.417122
+Train Epoch: 9 [21760/45056 (48%)]	Loss: 48.024021
+Train Epoch: 9 [23040/45056 (51%)]	Loss: 73.454216
+Train Epoch: 9 [24320/45056 (54%)]	Loss: 41.881279
+Train Epoch: 9 [25600/45056 (57%)]	Loss: 49.004280
+Train Epoch: 9 [26880/45056 (60%)]	Loss: 90.014450
+Train Epoch: 9 [28160/45056 (62%)]	Loss: 74.355179
+Train Epoch: 9 [29440/45056 (65%)]	Loss: 70.032829
+Train Epoch: 9 [30720/45056 (68%)]	Loss: 48.426495
+Train Epoch: 9 [32000/45056 (71%)]	Loss: 48.334938
+Train Epoch: 9 [33280/45056 (74%)]	Loss: 53.722992
+Train Epoch: 9 [34560/45056 (77%)]	Loss: 54.484848
+Train Epoch: 9 [35840/45056 (80%)]	Loss: 42.937363
+Train Epoch: 9 [37120/45056 (82%)]	Loss: 53.225975
+Train Epoch: 9 [38400/45056 (85%)]	Loss: 50.763187
+Train Epoch: 9 [39680/45056 (88%)]	Loss: 58.857044
+Train Epoch: 9 [40960/45056 (91%)]	Loss: 68.404305
+Train Epoch: 9 [42240/45056 (94%)]	Loss: 62.368168
+Train Epoch: 9 [43520/45056 (97%)]	Loss: 85.244476
+Train Epoch: 9 [44800/45056 (99%)]	Loss: 60.256134
+====> Epoch: 9 Average loss: 0.4680
+Epoch: 10/200  Origin test Acc: 0.7835  Origin Pre test ECE: 0.04758960381150246
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Train Epoch: 10 [0/45056 (0%)]	Loss: 63.648376
+Train Epoch: 10 [1280/45056 (3%)]	Loss: 46.231483
+Train Epoch: 10 [2560/45056 (6%)]	Loss: 64.931480
+Train Epoch: 10 [3840/45056 (9%)]	Loss: 40.597557
+Train Epoch: 10 [5120/45056 (11%)]	Loss: 52.884808
+Train Epoch: 10 [6400/45056 (14%)]	Loss: 66.150513
+Train Epoch: 10 [7680/45056 (17%)]	Loss: 53.363194
+Train Epoch: 10 [8960/45056 (20%)]	Loss: 64.674660
+Train Epoch: 10 [10240/45056 (23%)]	Loss: 54.537395
+Train Epoch: 10 [11520/45056 (26%)]	Loss: 33.407497
+Train Epoch: 10 [12800/45056 (28%)]	Loss: 64.115784
+Train Epoch: 10 [14080/45056 (31%)]	Loss: 60.738251
+Train Epoch: 10 [15360/45056 (34%)]	Loss: 67.742516
+Train Epoch: 10 [16640/45056 (37%)]	Loss: 55.107883
+Train Epoch: 10 [17920/45056 (40%)]	Loss: 43.328278
+Train Epoch: 10 [19200/45056 (43%)]	Loss: 48.971718
+Train Epoch: 10 [20480/45056 (45%)]	Loss: 51.859341
+Train Epoch: 10 [21760/45056 (48%)]	Loss: 66.553818
+Train Epoch: 10 [23040/45056 (51%)]	Loss: 59.270672
+Train Epoch: 10 [24320/45056 (54%)]	Loss: 67.490692
+Train Epoch: 10 [25600/45056 (57%)]	Loss: 56.562271
+Train Epoch: 10 [26880/45056 (60%)]	Loss: 71.308487
+Train Epoch: 10 [28160/45056 (62%)]	Loss: 56.285324
+Train Epoch: 10 [29440/45056 (65%)]	Loss: 54.626862
+Train Epoch: 10 [30720/45056 (68%)]	Loss: 62.593605
+Train Epoch: 10 [32000/45056 (71%)]	Loss: 59.104980
+Train Epoch: 10 [33280/45056 (74%)]	Loss: 62.708733
+Train Epoch: 10 [34560/45056 (77%)]	Loss: 49.819469
+Train Epoch: 10 [35840/45056 (80%)]	Loss: 50.892082
+Train Epoch: 10 [37120/45056 (82%)]	Loss: 42.823643
+Train Epoch: 10 [38400/45056 (85%)]	Loss: 67.390099
+Train Epoch: 10 [39680/45056 (88%)]	Loss: 67.075523
+Train Epoch: 10 [40960/45056 (91%)]	Loss: 47.804001
+Train Epoch: 10 [42240/45056 (94%)]	Loss: 62.984177
+Train Epoch: 10 [43520/45056 (97%)]	Loss: 78.098206
+Train Epoch: 10 [44800/45056 (99%)]	Loss: 71.798141
+====> Epoch: 10 Average loss: 0.4466
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 11/200  Origin test Acc: 0.7744  Origin Pre test ECE: 0.0783129557967186
+Train Epoch: 11 [0/45056 (0%)]	Loss: 57.201530
+Train Epoch: 11 [1280/45056 (3%)]	Loss: 48.155125
+Train Epoch: 11 [2560/45056 (6%)]	Loss: 52.903988
+Train Epoch: 11 [3840/45056 (9%)]	Loss: 50.751465
+Train Epoch: 11 [5120/45056 (11%)]	Loss: 47.107513
+Train Epoch: 11 [6400/45056 (14%)]	Loss: 57.335316
+Train Epoch: 11 [7680/45056 (17%)]	Loss: 48.690781
+Train Epoch: 11 [8960/45056 (20%)]	Loss: 46.372448
+Train Epoch: 11 [10240/45056 (23%)]	Loss: 53.392632
+Train Epoch: 11 [11520/45056 (26%)]	Loss: 54.528694
+Train Epoch: 11 [12800/45056 (28%)]	Loss: 44.745171
+Train Epoch: 11 [14080/45056 (31%)]	Loss: 76.979836
+Train Epoch: 11 [15360/45056 (34%)]	Loss: 58.853020
+Train Epoch: 11 [16640/45056 (37%)]	Loss: 50.256332
+Train Epoch: 11 [17920/45056 (40%)]	Loss: 42.382431
+Train Epoch: 11 [19200/45056 (43%)]	Loss: 54.621773
+Train Epoch: 11 [20480/45056 (45%)]	Loss: 72.687737
+Train Epoch: 11 [21760/45056 (48%)]	Loss: 54.435875
+Train Epoch: 11 [23040/45056 (51%)]	Loss: 51.519135
+Train Epoch: 11 [24320/45056 (54%)]	Loss: 77.636795
+Train Epoch: 11 [25600/45056 (57%)]	Loss: 45.487103
+Train Epoch: 11 [26880/45056 (60%)]	Loss: 54.695023
+Train Epoch: 11 [28160/45056 (62%)]	Loss: 59.923107
+Train Epoch: 11 [29440/45056 (65%)]	Loss: 56.214035
+Train Epoch: 11 [30720/45056 (68%)]	Loss: 71.358521
+Train Epoch: 11 [32000/45056 (71%)]	Loss: 63.484161
+Train Epoch: 11 [33280/45056 (74%)]	Loss: 48.808376
+Train Epoch: 11 [34560/45056 (77%)]	Loss: 74.632332
+Train Epoch: 11 [35840/45056 (80%)]	Loss: 58.165695
+Train Epoch: 11 [37120/45056 (82%)]	Loss: 50.256645
+Train Epoch: 11 [38400/45056 (85%)]	Loss: 52.782394
+Train Epoch: 11 [39680/45056 (88%)]	Loss: 57.140026
+Train Epoch: 11 [40960/45056 (91%)]	Loss: 74.126099
+Train Epoch: 11 [42240/45056 (94%)]	Loss: 49.886372
+Train Epoch: 11 [43520/45056 (97%)]	Loss: 54.893833
+Train Epoch: 11 [44800/45056 (99%)]	Loss: 54.604568
+====> Epoch: 11 Average loss: 0.4392
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 12/200  Origin test Acc: 0.8061  Origin Pre test ECE: 0.04526330903172493
+Train Epoch: 12 [0/45056 (0%)]	Loss: 56.655731
+Train Epoch: 12 [1280/45056 (3%)]	Loss: 56.149742
+Train Epoch: 12 [2560/45056 (6%)]	Loss: 50.840332
+Train Epoch: 12 [3840/45056 (9%)]	Loss: 52.838127
+Train Epoch: 12 [5120/45056 (11%)]	Loss: 55.977306
+Train Epoch: 12 [6400/45056 (14%)]	Loss: 44.312607
+Train Epoch: 12 [7680/45056 (17%)]	Loss: 46.766415
+Train Epoch: 12 [8960/45056 (20%)]	Loss: 56.469673
+Train Epoch: 12 [10240/45056 (23%)]	Loss: 45.703770
+Train Epoch: 12 [11520/45056 (26%)]	Loss: 54.503094
+Train Epoch: 12 [12800/45056 (28%)]	Loss: 62.597805
+Train Epoch: 12 [14080/45056 (31%)]	Loss: 48.786835
+Train Epoch: 12 [15360/45056 (34%)]	Loss: 37.021549
+Train Epoch: 12 [16640/45056 (37%)]	Loss: 59.173847
+Train Epoch: 12 [17920/45056 (40%)]	Loss: 49.311321
+Train Epoch: 12 [19200/45056 (43%)]	Loss: 55.268951
+Train Epoch: 12 [20480/45056 (45%)]	Loss: 51.136894
+Train Epoch: 12 [21760/45056 (48%)]	Loss: 58.881508
+Train Epoch: 12 [23040/45056 (51%)]	Loss: 64.756699
+Train Epoch: 12 [24320/45056 (54%)]	Loss: 59.590832
+Train Epoch: 12 [25600/45056 (57%)]	Loss: 62.762177
+Train Epoch: 12 [26880/45056 (60%)]	Loss: 62.255722
+Train Epoch: 12 [28160/45056 (62%)]	Loss: 62.000111
+Train Epoch: 12 [29440/45056 (65%)]	Loss: 50.008633
+Train Epoch: 12 [30720/45056 (68%)]	Loss: 54.596581
+Train Epoch: 12 [32000/45056 (71%)]	Loss: 56.790348
+Train Epoch: 12 [33280/45056 (74%)]	Loss: 52.332279
+Train Epoch: 12 [34560/45056 (77%)]	Loss: 48.084648
+Train Epoch: 12 [35840/45056 (80%)]	Loss: 71.381439
+Train Epoch: 12 [37120/45056 (82%)]	Loss: 62.443073
+Train Epoch: 12 [38400/45056 (85%)]	Loss: 70.247864
+Train Epoch: 12 [39680/45056 (88%)]	Loss: 55.152599
+Train Epoch: 12 [40960/45056 (91%)]	Loss: 41.041332
+Train Epoch: 12 [42240/45056 (94%)]	Loss: 59.173225
+Train Epoch: 12 [43520/45056 (97%)]	Loss: 64.307388
+Train Epoch: 12 [44800/45056 (99%)]	Loss: 64.998512
+====> Epoch: 12 Average loss: 0.4207
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 13/200  Origin test Acc: 0.8186  Origin Pre test ECE: 0.046214912086725235
+Train Epoch: 13 [0/45056 (0%)]	Loss: 40.501156
+Train Epoch: 13 [1280/45056 (3%)]	Loss: 45.291409
+Train Epoch: 13 [2560/45056 (6%)]	Loss: 37.403423
+Train Epoch: 13 [3840/45056 (9%)]	Loss: 43.239044
+Train Epoch: 13 [5120/45056 (11%)]	Loss: 61.027870
+Train Epoch: 13 [6400/45056 (14%)]	Loss: 44.919510
+Train Epoch: 13 [7680/45056 (17%)]	Loss: 43.097980
+Train Epoch: 13 [8960/45056 (20%)]	Loss: 67.157066
+Train Epoch: 13 [10240/45056 (23%)]	Loss: 50.149765
+Train Epoch: 13 [11520/45056 (26%)]	Loss: 35.623466
+Train Epoch: 13 [12800/45056 (28%)]	Loss: 52.855343
+Train Epoch: 13 [14080/45056 (31%)]	Loss: 60.727047
+Train Epoch: 13 [15360/45056 (34%)]	Loss: 35.216793
+Train Epoch: 13 [16640/45056 (37%)]	Loss: 62.805763
+Train Epoch: 13 [17920/45056 (40%)]	Loss: 36.739727
+Train Epoch: 13 [19200/45056 (43%)]	Loss: 48.308975
+Train Epoch: 13 [20480/45056 (45%)]	Loss: 54.528870
+Train Epoch: 13 [21760/45056 (48%)]	Loss: 54.129230
+Train Epoch: 13 [23040/45056 (51%)]	Loss: 70.938293
+Train Epoch: 13 [24320/45056 (54%)]	Loss: 39.010868
+Train Epoch: 13 [25600/45056 (57%)]	Loss: 40.517246
+Train Epoch: 13 [26880/45056 (60%)]	Loss: 43.150368
+Train Epoch: 13 [28160/45056 (62%)]	Loss: 44.588711
+Train Epoch: 13 [29440/45056 (65%)]	Loss: 60.371883
+Train Epoch: 13 [30720/45056 (68%)]	Loss: 63.006687
+Train Epoch: 13 [32000/45056 (71%)]	Loss: 48.031998
+Train Epoch: 13 [33280/45056 (74%)]	Loss: 46.959896
+Train Epoch: 13 [34560/45056 (77%)]	Loss: 59.765987
+Train Epoch: 13 [35840/45056 (80%)]	Loss: 78.940880
+Train Epoch: 13 [37120/45056 (82%)]	Loss: 59.817238
+Train Epoch: 13 [38400/45056 (85%)]	Loss: 60.627552
+Train Epoch: 13 [39680/45056 (88%)]	Loss: 50.265247
+Train Epoch: 13 [40960/45056 (91%)]	Loss: 47.578167
+Train Epoch: 13 [42240/45056 (94%)]	Loss: 77.071274
+Train Epoch: 13 [43520/45056 (97%)]	Loss: 47.312454
+Train Epoch: 13 [44800/45056 (99%)]	Loss: 66.192436
+====> Epoch: 13 Average loss: 0.4087
+Epoch: 14/200  Origin test Acc: 0.8118  Origin Pre test ECE: 0.04765668138861656
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Train Epoch: 14 [0/45056 (0%)]	Loss: 41.329754
+Train Epoch: 14 [1280/45056 (3%)]	Loss: 54.257866
+Train Epoch: 14 [2560/45056 (6%)]	Loss: 45.904091
+Train Epoch: 14 [3840/45056 (9%)]	Loss: 44.538658
+Train Epoch: 14 [5120/45056 (11%)]	Loss: 53.413712
+Train Epoch: 14 [6400/45056 (14%)]	Loss: 58.237530
+Train Epoch: 14 [7680/45056 (17%)]	Loss: 71.657410
+Train Epoch: 14 [8960/45056 (20%)]	Loss: 54.700958
+Train Epoch: 14 [10240/45056 (23%)]	Loss: 53.605633
+Train Epoch: 14 [11520/45056 (26%)]	Loss: 63.121090
+Train Epoch: 14 [12800/45056 (28%)]	Loss: 40.616535
+Train Epoch: 14 [14080/45056 (31%)]	Loss: 59.967724
+Train Epoch: 14 [15360/45056 (34%)]	Loss: 43.625912
+Train Epoch: 14 [16640/45056 (37%)]	Loss: 62.063156
+Train Epoch: 14 [17920/45056 (40%)]	Loss: 46.176994
+Train Epoch: 14 [19200/45056 (43%)]	Loss: 34.810467
+Train Epoch: 14 [20480/45056 (45%)]	Loss: 43.856167
+Train Epoch: 14 [21760/45056 (48%)]	Loss: 53.925747
+Train Epoch: 14 [23040/45056 (51%)]	Loss: 60.166855
+Train Epoch: 14 [24320/45056 (54%)]	Loss: 63.361057
+Train Epoch: 14 [25600/45056 (57%)]	Loss: 53.037823
+Train Epoch: 14 [26880/45056 (60%)]	Loss: 61.281364
+Train Epoch: 14 [28160/45056 (62%)]	Loss: 57.735275
+Train Epoch: 14 [29440/45056 (65%)]	Loss: 51.879395
+Train Epoch: 14 [30720/45056 (68%)]	Loss: 70.874237
+Train Epoch: 14 [32000/45056 (71%)]	Loss: 56.622101
+Train Epoch: 14 [33280/45056 (74%)]	Loss: 72.678284
+Train Epoch: 14 [34560/45056 (77%)]	Loss: 48.031940
+Train Epoch: 14 [35840/45056 (80%)]	Loss: 54.902939
+Train Epoch: 14 [37120/45056 (82%)]	Loss: 46.519901
+Train Epoch: 14 [38400/45056 (85%)]	Loss: 62.079643
+Train Epoch: 14 [39680/45056 (88%)]	Loss: 54.715706
+Train Epoch: 14 [40960/45056 (91%)]	Loss: 75.084686
+Train Epoch: 14 [42240/45056 (94%)]	Loss: 44.953388
+Train Epoch: 14 [43520/45056 (97%)]	Loss: 49.153397
+Train Epoch: 14 [44800/45056 (99%)]	Loss: 47.505520
+====> Epoch: 14 Average loss: 0.4100
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 15/200  Origin test Acc: 0.8206  Origin Pre test ECE: 0.040905144065618515
+Train Epoch: 15 [0/45056 (0%)]	Loss: 51.333481
+Train Epoch: 15 [1280/45056 (3%)]	Loss: 45.022831
+Train Epoch: 15 [2560/45056 (6%)]	Loss: 50.230328
+Train Epoch: 15 [3840/45056 (9%)]	Loss: 50.632694
+Train Epoch: 15 [5120/45056 (11%)]	Loss: 36.993694
+Train Epoch: 15 [6400/45056 (14%)]	Loss: 45.245098
+Train Epoch: 15 [7680/45056 (17%)]	Loss: 45.133411
+Train Epoch: 15 [8960/45056 (20%)]	Loss: 46.582333
+Train Epoch: 15 [10240/45056 (23%)]	Loss: 35.104076
+Train Epoch: 15 [11520/45056 (26%)]	Loss: 64.240715
+Train Epoch: 15 [12800/45056 (28%)]	Loss: 49.282669
+Train Epoch: 15 [14080/45056 (31%)]	Loss: 45.222015
+Train Epoch: 15 [15360/45056 (34%)]	Loss: 49.826019
+Train Epoch: 15 [16640/45056 (37%)]	Loss: 59.860680
+Train Epoch: 15 [17920/45056 (40%)]	Loss: 42.517120
+Train Epoch: 15 [19200/45056 (43%)]	Loss: 57.008324
+Train Epoch: 15 [20480/45056 (45%)]	Loss: 41.624447
+Train Epoch: 15 [21760/45056 (48%)]	Loss: 39.976997
+Train Epoch: 15 [23040/45056 (51%)]	Loss: 52.431889
+Train Epoch: 15 [24320/45056 (54%)]	Loss: 39.710911
+Train Epoch: 15 [25600/45056 (57%)]	Loss: 69.689934
+Train Epoch: 15 [26880/45056 (60%)]	Loss: 42.680847
+Train Epoch: 15 [28160/45056 (62%)]	Loss: 46.843605
+Train Epoch: 15 [29440/45056 (65%)]	Loss: 70.223923
+Train Epoch: 15 [30720/45056 (68%)]	Loss: 56.571762
+Train Epoch: 15 [32000/45056 (71%)]	Loss: 48.403069
+Train Epoch: 15 [33280/45056 (74%)]	Loss: 54.385490
+Train Epoch: 15 [34560/45056 (77%)]	Loss: 64.631172
+Train Epoch: 15 [35840/45056 (80%)]	Loss: 34.783699
+Train Epoch: 15 [37120/45056 (82%)]	Loss: 52.269421
+Train Epoch: 15 [38400/45056 (85%)]	Loss: 49.622784
+Train Epoch: 15 [39680/45056 (88%)]	Loss: 52.004082
+Train Epoch: 15 [40960/45056 (91%)]	Loss: 47.294197
+Train Epoch: 15 [42240/45056 (94%)]	Loss: 66.035942
+Train Epoch: 15 [43520/45056 (97%)]	Loss: 39.251007
+Train Epoch: 15 [44800/45056 (99%)]	Loss: 47.769966
+====> Epoch: 15 Average loss: 0.3930
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 16/200  Origin test Acc: 0.8276  Origin Pre test ECE: 0.05278608202934265
+Train Epoch: 16 [0/45056 (0%)]	Loss: 51.128494
+Train Epoch: 16 [1280/45056 (3%)]	Loss: 56.365097
+Train Epoch: 16 [2560/45056 (6%)]	Loss: 50.046379
+Train Epoch: 16 [3840/45056 (9%)]	Loss: 36.550823
+Train Epoch: 16 [5120/45056 (11%)]	Loss: 35.926113
+Train Epoch: 16 [6400/45056 (14%)]	Loss: 43.532318
+Train Epoch: 16 [7680/45056 (17%)]	Loss: 48.379257
+Train Epoch: 16 [8960/45056 (20%)]	Loss: 58.186142
+Train Epoch: 16 [10240/45056 (23%)]	Loss: 36.276604
+Train Epoch: 16 [11520/45056 (26%)]	Loss: 35.937321
+Train Epoch: 16 [12800/45056 (28%)]	Loss: 39.181404
+Train Epoch: 16 [14080/45056 (31%)]	Loss: 54.625816
+Train Epoch: 16 [15360/45056 (34%)]	Loss: 36.306480
+Train Epoch: 16 [16640/45056 (37%)]	Loss: 51.907436
+Train Epoch: 16 [17920/45056 (40%)]	Loss: 46.485371
+Train Epoch: 16 [19200/45056 (43%)]	Loss: 47.002056
+Train Epoch: 16 [20480/45056 (45%)]	Loss: 38.513142
+Train Epoch: 16 [21760/45056 (48%)]	Loss: 65.104912
+Train Epoch: 16 [23040/45056 (51%)]	Loss: 62.529411
+Train Epoch: 16 [24320/45056 (54%)]	Loss: 49.521824
+Train Epoch: 16 [25600/45056 (57%)]	Loss: 44.428555
+Train Epoch: 16 [26880/45056 (60%)]	Loss: 52.286251
+Train Epoch: 16 [28160/45056 (62%)]	Loss: 59.701488
+Train Epoch: 16 [29440/45056 (65%)]	Loss: 46.317070
+Train Epoch: 16 [30720/45056 (68%)]	Loss: 46.902805
+Train Epoch: 16 [32000/45056 (71%)]	Loss: 48.399841
+Train Epoch: 16 [33280/45056 (74%)]	Loss: 60.864040
+Train Epoch: 16 [34560/45056 (77%)]	Loss: 68.625740
+Train Epoch: 16 [35840/45056 (80%)]	Loss: 59.756264
+Train Epoch: 16 [37120/45056 (82%)]	Loss: 42.010532
+Train Epoch: 16 [38400/45056 (85%)]	Loss: 65.579498
+Train Epoch: 16 [39680/45056 (88%)]	Loss: 52.367382
+Train Epoch: 16 [40960/45056 (91%)]	Loss: 44.826168
+Train Epoch: 16 [42240/45056 (94%)]	Loss: 35.497021
+Train Epoch: 16 [43520/45056 (97%)]	Loss: 54.865479
+Train Epoch: 16 [44800/45056 (99%)]	Loss: 64.875771
+====> Epoch: 16 Average loss: 0.3859
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 17/200  Origin test Acc: 0.8118  Origin Pre test ECE: 0.04949827492237091
+Train Epoch: 17 [0/45056 (0%)]	Loss: 52.873661
+Train Epoch: 17 [1280/45056 (3%)]	Loss: 50.643040
+Train Epoch: 17 [2560/45056 (6%)]	Loss: 71.684868
+Train Epoch: 17 [3840/45056 (9%)]	Loss: 42.459362
+Train Epoch: 17 [5120/45056 (11%)]	Loss: 47.768684
+Train Epoch: 17 [6400/45056 (14%)]	Loss: 47.334160
+Train Epoch: 17 [7680/45056 (17%)]	Loss: 58.295357
+Train Epoch: 17 [8960/45056 (20%)]	Loss: 52.061855
+Train Epoch: 17 [10240/45056 (23%)]	Loss: 39.670574
+Train Epoch: 17 [11520/45056 (26%)]	Loss: 40.109520
+Train Epoch: 17 [12800/45056 (28%)]	Loss: 59.141468
+Train Epoch: 17 [14080/45056 (31%)]	Loss: 40.779396
+Train Epoch: 17 [15360/45056 (34%)]	Loss: 57.864807
+Train Epoch: 17 [16640/45056 (37%)]	Loss: 38.136814
+Train Epoch: 17 [17920/45056 (40%)]	Loss: 47.135185
+Train Epoch: 17 [19200/45056 (43%)]	Loss: 63.580021
+Train Epoch: 17 [20480/45056 (45%)]	Loss: 60.572464
+Train Epoch: 17 [21760/45056 (48%)]	Loss: 40.844719
+Train Epoch: 17 [23040/45056 (51%)]	Loss: 53.641678
+Train Epoch: 17 [24320/45056 (54%)]	Loss: 38.055336
+Train Epoch: 17 [25600/45056 (57%)]	Loss: 56.399815
+Train Epoch: 17 [26880/45056 (60%)]	Loss: 52.229046
+Train Epoch: 17 [28160/45056 (62%)]	Loss: 60.464684
+Train Epoch: 17 [29440/45056 (65%)]	Loss: 63.820316
+Train Epoch: 17 [30720/45056 (68%)]	Loss: 63.312206
+Train Epoch: 17 [32000/45056 (71%)]	Loss: 54.516869
+Train Epoch: 17 [33280/45056 (74%)]	Loss: 42.385548
+Train Epoch: 17 [34560/45056 (77%)]	Loss: 28.854698
+Train Epoch: 17 [35840/45056 (80%)]	Loss: 62.891922
+Train Epoch: 17 [37120/45056 (82%)]	Loss: 54.925613
+Train Epoch: 17 [38400/45056 (85%)]	Loss: 55.994980
+Train Epoch: 17 [39680/45056 (88%)]	Loss: 39.451389
+Train Epoch: 17 [40960/45056 (91%)]	Loss: 54.245216
+Train Epoch: 17 [42240/45056 (94%)]	Loss: 42.864075
+Train Epoch: 17 [43520/45056 (97%)]	Loss: 47.215347
+Train Epoch: 17 [44800/45056 (99%)]	Loss: 49.686855
+====> Epoch: 17 Average loss: 0.3782
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 18/200  Origin test Acc: 0.7923  Origin Pre test ECE: 0.07559944689273834
+Train Epoch: 18 [0/45056 (0%)]	Loss: 47.308865
+Train Epoch: 18 [1280/45056 (3%)]	Loss: 44.203339
+Train Epoch: 18 [2560/45056 (6%)]	Loss: 46.418568
+Train Epoch: 18 [3840/45056 (9%)]	Loss: 31.375343
+Train Epoch: 18 [5120/45056 (11%)]	Loss: 54.533295
+Train Epoch: 18 [6400/45056 (14%)]	Loss: 49.859177
+Train Epoch: 18 [7680/45056 (17%)]	Loss: 46.234653
+Train Epoch: 18 [8960/45056 (20%)]	Loss: 52.584583
+Train Epoch: 18 [10240/45056 (23%)]	Loss: 53.418842
+Train Epoch: 18 [11520/45056 (26%)]	Loss: 53.655102
+Train Epoch: 18 [12800/45056 (28%)]	Loss: 54.685341
+Train Epoch: 18 [14080/45056 (31%)]	Loss: 50.089718
+Train Epoch: 18 [15360/45056 (34%)]	Loss: 45.616062
+Train Epoch: 18 [16640/45056 (37%)]	Loss: 52.569897
+Train Epoch: 18 [17920/45056 (40%)]	Loss: 41.902634
+Train Epoch: 18 [19200/45056 (43%)]	Loss: 52.174385
+Train Epoch: 18 [20480/45056 (45%)]	Loss: 41.808014
+Train Epoch: 18 [21760/45056 (48%)]	Loss: 35.459274
+Train Epoch: 18 [23040/45056 (51%)]	Loss: 51.932808
+Train Epoch: 18 [24320/45056 (54%)]	Loss: 60.502617
+Train Epoch: 18 [25600/45056 (57%)]	Loss: 36.374088
+Train Epoch: 18 [26880/45056 (60%)]	Loss: 65.475349
+Train Epoch: 18 [28160/45056 (62%)]	Loss: 62.748249
+Train Epoch: 18 [29440/45056 (65%)]	Loss: 52.219597
+Train Epoch: 18 [30720/45056 (68%)]	Loss: 42.497116
+Train Epoch: 18 [32000/45056 (71%)]	Loss: 48.227577
+Train Epoch: 18 [33280/45056 (74%)]	Loss: 38.608967
+Train Epoch: 18 [34560/45056 (77%)]	Loss: 51.722713
+Train Epoch: 18 [35840/45056 (80%)]	Loss: 72.080910
+Train Epoch: 18 [37120/45056 (82%)]	Loss: 57.136230
+Train Epoch: 18 [38400/45056 (85%)]	Loss: 50.071369
+Train Epoch: 18 [39680/45056 (88%)]	Loss: 46.336689
+Train Epoch: 18 [40960/45056 (91%)]	Loss: 45.241093
+Train Epoch: 18 [42240/45056 (94%)]	Loss: 39.227180
+Train Epoch: 18 [43520/45056 (97%)]	Loss: 29.958599
+Train Epoch: 18 [44800/45056 (99%)]	Loss: 52.174534

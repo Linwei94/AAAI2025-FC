@@ -183,6 +183,11 @@ def parseArgs():
                         dest="first_milestone", help="First milestone to change lr")
     parser.add_argument("--second-milestone", type=int, default=second_milestone,
                         dest="second_milestone", help="Second milestone to change lr")
+    
+
+    parser.add_argument("--name", type=str, default="",
+                        dest="name", help="Name of the run")
+
 
     return parser.parse_args()
 

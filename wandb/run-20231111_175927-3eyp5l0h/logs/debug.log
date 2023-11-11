@@ -1,0 +1,25 @@
+2023-11-11 17:59:27,262 INFO    MainThread:2845951 [wandb_setup.py:_flush():68] Configure stats pid to 2845951
+2023-11-11 17:59:27,262 INFO    MainThread:2845951 [wandb_setup.py:_flush():68] Loading settings from /home/linwei/.config/wandb/settings
+2023-11-11 17:59:27,263 INFO    MainThread:2845951 [wandb_setup.py:_flush():68] Loading settings from /home/linwei/focal_calibration/wandb/settings
+2023-11-11 17:59:27,263 INFO    MainThread:2845951 [wandb_setup.py:_flush():68] Loading settings from environment variables: {'_require_service': 'True'}
+2023-11-11 17:59:27,263 INFO    MainThread:2845951 [wandb_setup.py:_flush():68] Inferring run settings from compute environment: {'program_relpath': 'train.py', 'program': '/home/linwei/focal_calibration/train.py'}
+2023-11-11 17:59:27,263 INFO    MainThread:2845951 [wandb_init.py:_log_setup():476] Logging user logs to /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/logs/debug.log
+2023-11-11 17:59:27,263 INFO    MainThread:2845951 [wandb_init.py:_log_setup():477] Logging internal logs to /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/logs/debug-internal.log
+2023-11-11 17:59:27,264 INFO    MainThread:2845951 [wandb_init.py:init():516] calling init triggers
+2023-11-11 17:59:27,264 INFO    MainThread:2845951 [wandb_init.py:init():519] wandb.init called with sweep_config: {}
+config: {'dataset': 'cifar10', 'dataset_root': './', 'data_aug': True, 'gpu': True, 'load': False, 'train_batch_size': 128, 'test_batch_size': 128, 'epoch': 200, 'learning_rate': 0.1, 'momentum': 0.9, 'nesterov': False, 'weight_decay': 0.0005, 'optimiser': 'sgd', 'loss_function': 'cross_entropy', 'loss_mean': False, 'gamma': 1.0, 'gamma2': 1.0, 'gamma3': 1.0, 'lamda': 1.0, 'gamma_schedule': 0, 'gamma_schedule_step1': 100, 'gamma_schedule_step2': 250, 'log_interval': 50, 'save_interval': 50, 'saved_model_name': 'resnet50_cross_entropy_350.model', 'save_loc': './', 'model_name': None, 'load_loc': './', 'model': 'resnet18', 'first_milestone': 100, 'second_milestone': 150, 'name': 'resnet18_ce'}
+2023-11-11 17:59:27,264 INFO    MainThread:2845951 [wandb_init.py:init():569] starting backend
+2023-11-11 17:59:27,264 INFO    MainThread:2845951 [wandb_init.py:init():573] setting up manager
+2023-11-11 17:59:27,265 INFO    MainThread:2845951 [backend.py:_multiprocessing_setup():102] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2023-11-11 17:59:27,266 INFO    MainThread:2845951 [wandb_init.py:init():580] backend started and connected
+2023-11-11 17:59:27,268 INFO    MainThread:2845951 [wandb_init.py:init():658] updated telemetry
+2023-11-11 17:59:27,282 INFO    MainThread:2845951 [wandb_init.py:init():692] communicating run to backend with 30 second timeout
+2023-11-11 17:59:27,934 INFO    MainThread:2845951 [wandb_run.py:_on_init():1974] communicating current version
+2023-11-11 17:59:27,961 INFO    MainThread:2845951 [wandb_run.py:_on_init():1978] got version response upgrade_message: "wandb version 0.16.0 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-11-11 17:59:27,961 INFO    MainThread:2845951 [wandb_init.py:init():727] starting run threads in backend
+2023-11-11 17:59:32,972 INFO    MainThread:2845951 [wandb_run.py:_console_start():1954] atexit reg
+2023-11-11 17:59:32,972 INFO    MainThread:2845951 [wandb_run.py:_redirect():1812] redirect: SettingsConsole.WRAP_RAW
+2023-11-11 17:59:32,972 INFO    MainThread:2845951 [wandb_run.py:_redirect():1877] Wrapping output streams.
+2023-11-11 17:59:32,973 INFO    MainThread:2845951 [wandb_run.py:_redirect():1899] Redirects installed.
+2023-11-11 17:59:32,973 INFO    MainThread:2845951 [wandb_init.py:init():764] run started, returning control to user process
