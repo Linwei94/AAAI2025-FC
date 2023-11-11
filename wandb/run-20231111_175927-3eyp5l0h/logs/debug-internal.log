@@ -263,3 +263,24 @@
 2023-11-11 18:03:30,001 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
 2023-11-11 18:03:32,002 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
 2023-11-11 18:03:34,002 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
+2023-11-11 18:03:34,909 DEBUG   HandlerThread:2846100 [handler.py:handle_request():138] handle_request: stop_status
+2023-11-11 18:03:34,910 DEBUG   SenderThread:2846100 [sender.py:send_request():315] send_request: stop_status
+2023-11-11 18:03:35,317 DEBUG   HandlerThread:2846100 [handler.py:handle_request():138] handle_request: partial_history
+2023-11-11 18:03:38,211 DEBUG   SenderThread:2846100 [sender.py:send():301] send: history
+2023-11-11 18:03:38,211 DEBUG   SenderThread:2846100 [sender.py:send():301] send: summary
+2023-11-11 18:03:38,212 INFO    SenderThread:2846100 [sender.py:_save_file():1155] saving file wandb-summary.json with policy end
+2023-11-11 18:03:39,003 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/wandb-summary.json
+2023-11-11 18:03:40,004 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
+2023-11-11 18:03:42,004 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
+2023-11-11 18:03:44,004 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
+2023-11-11 18:03:46,005 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
+2023-11-11 18:03:47,803 DEBUG   HandlerThread:2846100 [handler.py:handle_request():138] handle_request: partial_history
+2023-11-11 18:03:47,804 DEBUG   SenderThread:2846100 [sender.py:send():301] send: history
+2023-11-11 18:03:47,804 DEBUG   SenderThread:2846100 [sender.py:send():301] send: summary
+2023-11-11 18:03:47,804 INFO    SenderThread:2846100 [sender.py:_save_file():1155] saving file wandb-summary.json with policy end
+2023-11-11 18:03:48,005 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/wandb-summary.json
+2023-11-11 18:03:50,006 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
+2023-11-11 18:03:52,006 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log
+2023-11-11 18:03:53,212 DEBUG   HandlerThread:2846100 [handler.py:handle_request():138] handle_request: stop_status
+2023-11-11 18:03:53,212 DEBUG   SenderThread:2846100 [sender.py:send_request():315] send_request: stop_status
+2023-11-11 18:03:54,007 INFO    Thread-13 :2846100 [dir_watcher.py:_on_file_modified():292] file/dir modified: /home/linwei/focal_calibration/wandb/run-20231111_175927-3eyp5l0h/files/output.log

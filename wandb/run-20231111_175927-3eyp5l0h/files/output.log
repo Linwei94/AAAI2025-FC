@@ -761,3 +761,72 @@ Train Epoch: 18 [40960/45056 (91%)]	Loss: 45.241093
 Train Epoch: 18 [42240/45056 (94%)]	Loss: 39.227180
 Train Epoch: 18 [43520/45056 (97%)]	Loss: 29.958599
 Train Epoch: 18 [44800/45056 (99%)]	Loss: 52.174534
+====> Epoch: 18 Average loss: 0.3676
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 19/200  Origin test Acc: 0.8332  Origin Pre test ECE: 0.04063078761100769
+Train Epoch: 19 [0/45056 (0%)]	Loss: 41.358852
+Train Epoch: 19 [1280/45056 (3%)]	Loss: 57.966118
+Train Epoch: 19 [2560/45056 (6%)]	Loss: 38.953163
+Train Epoch: 19 [3840/45056 (9%)]	Loss: 45.737816
+Train Epoch: 19 [5120/45056 (11%)]	Loss: 51.861458
+Train Epoch: 19 [6400/45056 (14%)]	Loss: 42.570183
+Train Epoch: 19 [7680/45056 (17%)]	Loss: 42.528336
+Train Epoch: 19 [8960/45056 (20%)]	Loss: 38.680809
+Train Epoch: 19 [10240/45056 (23%)]	Loss: 52.948002
+Train Epoch: 19 [11520/45056 (26%)]	Loss: 66.576195
+Train Epoch: 19 [12800/45056 (28%)]	Loss: 50.424702
+Train Epoch: 19 [14080/45056 (31%)]	Loss: 38.397667
+Train Epoch: 19 [15360/45056 (34%)]	Loss: 32.047554
+Train Epoch: 19 [16640/45056 (37%)]	Loss: 35.882534
+Train Epoch: 19 [17920/45056 (40%)]	Loss: 42.971272
+Train Epoch: 19 [19200/45056 (43%)]	Loss: 43.121811
+Train Epoch: 19 [20480/45056 (45%)]	Loss: 39.980820
+Train Epoch: 19 [21760/45056 (48%)]	Loss: 34.433392
+Train Epoch: 19 [23040/45056 (51%)]	Loss: 62.740639
+Train Epoch: 19 [24320/45056 (54%)]	Loss: 37.955288
+Train Epoch: 19 [25600/45056 (57%)]	Loss: 48.430347
+Train Epoch: 19 [26880/45056 (60%)]	Loss: 38.359264
+Train Epoch: 19 [28160/45056 (62%)]	Loss: 50.120258
+Train Epoch: 19 [29440/45056 (65%)]	Loss: 38.607948
+Train Epoch: 19 [30720/45056 (68%)]	Loss: 57.096764
+Train Epoch: 19 [32000/45056 (71%)]	Loss: 46.801037
+Train Epoch: 19 [33280/45056 (74%)]	Loss: 35.864384
+Train Epoch: 19 [34560/45056 (77%)]	Loss: 28.488079
+Train Epoch: 19 [35840/45056 (80%)]	Loss: 35.761768
+Train Epoch: 19 [37120/45056 (82%)]	Loss: 39.416714
+Train Epoch: 19 [38400/45056 (85%)]	Loss: 49.269730
+Train Epoch: 19 [39680/45056 (88%)]	Loss: 69.950813
+Train Epoch: 19 [40960/45056 (91%)]	Loss: 46.813801
+Train Epoch: 19 [42240/45056 (94%)]	Loss: 55.600933
+Train Epoch: 19 [43520/45056 (97%)]	Loss: 49.661789
+Train Epoch: 19 [44800/45056 (99%)]	Loss: 53.807312
+====> Epoch: 19 Average loss: 0.3679
+/home/linwei/focal_calibration/train_utils.py:56: UserWarning: torch.nn.utils.clip_grad_norm is now deprecated in favor of torch.nn.utils.clip_grad_norm_.
+  torch.nn.utils.clip_grad_norm(model.parameters(), 2)
+Epoch: 20/200  Origin test Acc: 0.8375  Origin Pre test ECE: 0.03441378474235535
+Train Epoch: 20 [0/45056 (0%)]	Loss: 59.031261
+Train Epoch: 20 [1280/45056 (3%)]	Loss: 39.166245
+Train Epoch: 20 [2560/45056 (6%)]	Loss: 32.388535
+Train Epoch: 20 [3840/45056 (9%)]	Loss: 44.045044
+Train Epoch: 20 [5120/45056 (11%)]	Loss: 41.954380
+Train Epoch: 20 [6400/45056 (14%)]	Loss: 32.900124
+Train Epoch: 20 [7680/45056 (17%)]	Loss: 35.930458
+Train Epoch: 20 [8960/45056 (20%)]	Loss: 64.260254
+Train Epoch: 20 [10240/45056 (23%)]	Loss: 68.894981
+Train Epoch: 20 [11520/45056 (26%)]	Loss: 71.370628
+Train Epoch: 20 [12800/45056 (28%)]	Loss: 38.793812
+Train Epoch: 20 [14080/45056 (31%)]	Loss: 29.642725
+Train Epoch: 20 [15360/45056 (34%)]	Loss: 41.486660
+Train Epoch: 20 [16640/45056 (37%)]	Loss: 42.376804
+Train Epoch: 20 [17920/45056 (40%)]	Loss: 37.097500
+Train Epoch: 20 [19200/45056 (43%)]	Loss: 25.921171
+Train Epoch: 20 [20480/45056 (45%)]	Loss: 35.941792
+Train Epoch: 20 [21760/45056 (48%)]	Loss: 56.831242
+Train Epoch: 20 [23040/45056 (51%)]	Loss: 34.756420
+Train Epoch: 20 [24320/45056 (54%)]	Loss: 46.993713
+Train Epoch: 20 [25600/45056 (57%)]	Loss: 49.643921
+Train Epoch: 20 [26880/45056 (60%)]	Loss: 61.595493
+Train Epoch: 20 [28160/45056 (62%)]	Loss: 55.995461
+Train Epoch: 20 [29440/45056 (65%)]	Loss: 44.334000
+Train Epoch: 20 [30720/45056 (68%)]	Loss: 52.930397
