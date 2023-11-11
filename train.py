@@ -10,14 +10,16 @@ import torch.backends.cudnn as cudnn
 import random
 import json
 import sys
-
+import wandb
 # Import dataloaders
 import Data.cifar10 as cifar10
 import Data.cifar100 as cifar100
 import Data.tiny_imagenet as tiny_imagenet
+from utils.metrics import test_classification_net
+
 
 # Import network models
-from Net.resnet import resnet50, resnet110
+from Net.resnet import resnet18, resnet34, resnet50, resnet101, resnet110
 from Net.resnet_tiny_imagenet import resnet50 as resnet50_ti
 from Net.wide_resnet import wide_resnet_cifar
 from Net.densenet import densenet121
@@ -29,9 +31,6 @@ from Losses.loss import brier_score
 
 # Import train and validation utilities
 from train_utils import train_single_epoch, test_single_epoch
-
-# Import validation metrics
-from Metrics.metrics import test_classification_net
 
 
 dataset_num_classes = {
@@ -48,6 +47,8 @@ dataset_loader = {
 
 
 models = {
+    'resnet18': resnet18,
+    'resnet34': resnet34,
     'resnet50': resnet50,
     'resnet50_ti': resnet50_ti,
     'resnet110': resnet110,
@@ -99,9 +100,9 @@ def parseArgs():
     saved_model_name = "resnet50_cross_entropy_350.model"
     load_loc = './'
     model = "resnet50"
-    epoch = 350
-    first_milestone = 150 #Milestone for change in lr
-    second_milestone = 250 #Milestone for change in lr
+    epoch = 200
+    first_milestone = 100 #Milestone for change in lr
+    second_milestone = 150 #Milestone for change in lr
     gamma_schedule_step1 = 100
     gamma_schedule_step2 = 250
 
@@ -190,6 +191,7 @@ if __name__ == "__main__":
 
     torch.manual_seed(1)
     args = parseArgs()
+    wandb.init(project="Benchmark Study on Calibration - rebuttal", config=args, name=args.name)
 
     cuda = False
     if (torch.cuda.is_available() and args.gpu):
@@ -295,53 +297,25 @@ if __name__ == "__main__":
                                         gamma=gamma,
                                         lamda=args.lamda,
                                         loss_mean=args.loss_mean)
-        val_loss = test_single_epoch(epoch,
-                                     net,
-                                     val_loader,
-                                     device,
-                                     loss_function=args.loss_function,
-                                     gamma=gamma,
-                                     lamda=args.lamda)
-        test_loss = test_single_epoch(epoch,
-                                      net,
-                                      val_loader,
-                                      device,
-                                      loss_function=args.loss_function,
-                                      gamma=gamma,
-                                      lamda=args.lamda)
-        _, val_acc, _, _, _ = test_classification_net(net, val_loader, device)
-
-        training_set_loss[epoch] = train_loss
-        val_set_loss[epoch] = val_loss
-        test_set_loss[epoch] = test_loss
-        val_set_err[epoch] = 1 - val_acc
-
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
-            print('New best error: %.4f' % (1 - best_val_acc))
-            save_name = args.save_loc + \
-                        args.model_name + '_' + \
-                        loss_function_save_name(args.loss_function, args.gamma_schedule, gamma, args.gamma, args.gamma2, args.gamma3, args.lamda) + \
-                        '_best_' + \
-                        str(epoch + 1) + '.model'
-            torch.save(net.state_dict(), save_name)
-
-        if (epoch + 1) % args.save_interval == 0:
-            save_name = args.save_loc + \
-                        args.model_name + '_' + \
-                        loss_function_save_name(args.loss_function, args.gamma_schedule, gamma, args.gamma, args.gamma2, args.gamma3, args.lamda) + \
-                        '_' + str(epoch + 1) + '.model'
-            torch.save(net.state_dict(), save_name)
-
-
-    with open(save_name[:save_name.rfind('_')] + '_train_loss.json', 'a') as f:
-        json.dump(training_set_loss, f)
-
-    with open(save_name[:save_name.rfind('_')] + '_val_loss.json', 'a') as fv:
-        json.dump(val_set_loss, fv)
-
-    with open(save_name[:save_name.rfind('_')] + '_test_loss.json', 'a') as ft:
-        json.dump(test_set_loss, ft)
-
-    with open(save_name[:save_name.rfind('_')] + '_val_error.json', 'a') as ft:
-        json.dump(val_set_err, ft)
+        
+        ori_val_acc, ori_pre_val_nll, ori_pre_val_ece, ori_test_acc, ori_pre_test_ece, ori_pre_test_adaece, ori_pre_test_cece, ori_pre_test_nll, ori_T_opt, ori_post_test_ece, ori_post_test_adaece, ori_post_test_cece, ori_post_test_nll = test_classification_net(net, test_loader, val_loader, device)
+        print(f"Epoch: {epoch + 1}/{num_epochs}  "
+              f"Origin test Acc: {ori_test_acc}  "
+              f"Origin Pre test ECE: {ori_pre_test_ece}  ")
+        
+        wandb.log({
+            "origin_val_acc": ori_val_acc,
+            "ori_val_acc": ori_val_acc,
+            "ori_pre_val_nll": ori_pre_val_nll,
+            "ori_pre_val_ece": ori_pre_val_ece,
+            "ori_test_acc": ori_test_acc,
+            "ori_pre_test_ece": ori_pre_test_ece,
+            "ori_pre_test_adaece": ori_pre_test_adaece,
+            "ori_pre_test_cece": ori_pre_test_cece,
+            "ori_pre_test_nll": ori_pre_test_nll,
+            "ori_T_opt": ori_T_opt,
+            "ori_post_test_ece": ori_post_test_ece,
+            "ori_post_test_adaece": ori_post_test_adaece,
+            "ori_post_test_cece": ori_post_test_cece,
+            "ori_post_test_nll": ori_post_test_nll
+        })
