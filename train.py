@@ -1,7 +1,7 @@
 '''
 Script for training models.
 '''
-
+import os
 from torch import optim
 import torch
 import torch.utils.data
@@ -324,3 +324,8 @@ if __name__ == "__main__":
             "ori_post_test_cece": ori_post_test_cece,
             "ori_post_test_nll": ori_post_test_nll
         })
+
+        # save models to output directory
+        if os.path.isdir('./output') == False:
+            os.mkdir('./output')
+        torch.save(net.state_dict(), './output/' + args.model_name + '_' + args.loss_function +'.model')

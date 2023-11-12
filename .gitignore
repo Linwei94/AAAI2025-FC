@@ -3,3 +3,4 @@ __pycache__
 tiny-imagenet-200
 *.model
 wandb/
+output/
