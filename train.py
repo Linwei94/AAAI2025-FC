@@ -217,8 +217,6 @@ if __name__ == "__main__":
 
     if args.gpu is True:
         net.cuda()
-        net = torch.nn.DataParallel(
-            net, device_ids=range(torch.cuda.device_count()))
         cudnn.benchmark = True
 
     start_epoch = 0
@@ -328,4 +326,4 @@ if __name__ == "__main__":
         # save models to output directory
         if os.path.isdir('./output') == False:
             os.mkdir('./output')
-        torch.save(net.state_dict(), './output/' + args.model_name + '_' + args.loss_function +'.model')
+        torch.save(net.state_dict(), './output/' + args.model_name + '_' + args.loss_function + '_' + str(epoch) +'.model' )

@@ -6,6 +6,7 @@ import argparse
 from torch import nn
 import matplotlib.pyplot as plt
 import torch.backends.cudnn as cudnn
+import datetime
 
 # Import dataloaders
 import Data.cifar10 as cifar10
@@ -53,8 +54,9 @@ def parseArgs():
     default_dataset = 'cifar10'
     dataset_root = './'
     model = 'resnet50'
-    save_loc = './'
-    saved_model_name = 'resnet50_cross_entropy_350.model'
+    save_loc = './pretrained_weights/'
+    saved_model_name = 'resnet50_focal_loss_gamma_3.0_350.model'
+    # saved_model_name = 'resnet50_cross_entropy_350.model'
     num_bins = 15
     model_name = None
     train_batch_size = 128
@@ -89,10 +91,15 @@ def parseArgs():
                         dest="train_batch_size", help="Batch size")
     parser.add_argument("-tb", type=int, default=test_batch_size,
                         dest="test_batch_size", help="Test Batch size")
+    parser.add_argument("--feature_clamp", type=float, default=0.3)
     parser.add_argument("--cverror", type=str, default=cross_validation_error,
                         dest="cross_validation_error", help='Error function to do temp scaling')
     parser.add_argument("-log", action="store_true", dest="log",
                         help="whether to print log data")
+    
+    parser.add_argument("--drop_index", type=int, default=None,
+                        dest="drop_index", help="Index to drop from the dataset")
+    
 
     return parser.parse_args()
 
@@ -157,15 +164,20 @@ if __name__ == "__main__":
             random_seed=1,
             pin_memory=args.gpu
         )
-
         test_loader = dataset_loader[args.dataset].get_test_loader(
             batch_size=args.test_batch_size,
-            pin_memory=args.gpu
+            pin_memory=args.gpu,
         )
 
+
+    # for c in list(range(26, 100, 1)):
+    # args.feature_clamp = c/100
+    drop_results = []
+    args.feature_clamp = 100
+    baseline_results = torch.load(f"output/results/{args.dataset}_{args.model_name}_baseline.pth")
     model = models[model_name]
 
-    net = model(num_classes=num_classes, temp=1.0)
+    net = model(num_classes=num_classes, temp=1.0, feature_clamp=args.feature_clamp)
     net.cuda()
     net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
     cudnn.benchmark = True
@@ -177,46 +189,56 @@ if __name__ == "__main__":
     cece_criterion = ClasswiseECELoss().cuda()
 
     logits, labels = get_logits_labels(test_loader, net)
-    conf_matrix, p_accuracy, _, _, _ = test_classification_net_logits(logits, labels)
-
-    p_ece = ece_criterion(logits, labels).item()
-    p_adaece = adaece_criterion(logits, labels).item()
-    p_cece = cece_criterion(logits, labels).item()
-    p_nll = nll_criterion(logits, labels).item()
-
-    res_str = '{:s}&{:.4f}&{:.4f}&{:.4f}&{:.4f}&{:.4f}'.format(saved_model_name,  1-p_accuracy,  p_nll,  p_ece,  p_adaece, p_cece)
-
-    # Printing the required evaluation metrics
-    if args.log:
-        print (conf_matrix)
-        print ('Test error: ' + str((1 - p_accuracy)))
-        print ('Test NLL: ' + str(p_nll))
-        print ('ECE: ' + str(p_ece))
-        print ('AdaECE: ' + str(p_adaece))
-        print ('Classwise ECE: ' + str(p_cece))
-
+    conf_matrix, accuracy, _, _, _ = test_classification_net_logits(logits, labels)
 
     scaled_model = ModelWithTemperature(net, args.log)
     scaled_model.set_temperature(val_loader, cross_validate=cross_validation_error)
     T_opt = scaled_model.get_temperature()
-    logits, labels = get_logits_labels(test_loader, scaled_model)
-    conf_matrix, accuracy, _, _, _ = test_classification_net_logits(logits, labels)
+    post_logits, post_labels = get_logits_labels(test_loader, scaled_model)
 
-    ece = ece_criterion(logits, labels).item()
-    adaece = adaece_criterion(logits, labels).item()
-    cece = cece_criterion(logits, labels).item()
-    nll = nll_criterion(logits, labels).item()
+    torch.save(logits, f"output/results/{args.dataset}_{args.model_name}_pre_logits.pth")
+    torch.save(labels, f"output/results/{args.dataset}_{args.model_name}_pre_labels.pth")
+    torch.save(post_logits, f"output/results/{args.dataset}_{args.model_name}_post_logits.pth")
+    torch.save(post_labels, f"output/results/{args.dataset}_{args.model_name}_post_labels.pth")
 
-    res_str += '&{:.4f}({:.2f})&{:.4f}&{:.4f}&{:.4f}'.format(nll,  T_opt,  ece,  adaece, cece)
 
-    if args.log:
-        print ('Optimal temperature: ' + str(T_opt))
-        print (conf_matrix)
-        print ('Test error: ' + str((1 - accuracy)))
-        print ('Test NLL: ' + str(nll))
-        print ('ECE: ' + str(ece))
-        print ('AdaECE: ' + str(adaece))
-        print ('Classwise ECE: ' + str(cece))
 
-    # Test NLL & ECE & AdaECE & Classwise ECE
-    print(res_str)
+    for i in range(10000):
+        start_time = datetime.datetime.now()
+
+        # remove index i from logits and labels
+        drop_logits = torch.cat([logits[:i], logits[i+1:]])
+        drop_labels = torch.cat([labels[:i], labels[i+1:]])
+        drop_post_logits = torch.cat([post_logits[:i], post_logits[i+1:]])
+        drop_post_labels = torch.cat([post_labels[:i], post_labels[i+1:]])
+        
+
+        p_ece = ece_criterion(drop_logits, drop_labels).item()
+        p_adaece = adaece_criterion(drop_logits, drop_labels).item()
+        p_cece = cece_criterion(drop_logits, drop_labels).item()
+        p_nll = nll_criterion(drop_logits, drop_labels).item()
+
+        ece = ece_criterion(drop_post_logits, drop_post_labels).item()
+        adaece = adaece_criterion(drop_post_logits, drop_post_labels).item()
+        cece = cece_criterion(drop_post_logits, drop_post_labels).item()
+        nll = nll_criterion(drop_post_logits, drop_post_labels).item()
+
+
+        # Test NLL & ECE & AdaECE & Classwise ECE
+        # print(f"c={args.feature_clamp} ------- acc={accuracy}, ece={p_ece:.4f}, postece={ece:.4f}, adaece={adaece:.4f}, cece={cece:.4f}, nll={nll:.4f}")
+        results = {
+            # "acc": accuracy,
+            "pre_ece": p_ece,
+            "pre_adaece": p_adaece,
+            "pre_cece": p_cece,
+            "pre_nll": p_nll,
+            "post_ece": ece,
+            "post_adaece": adaece,
+            "post_cece": cece,
+            "post_nll": nll,
+        }
+        end_time = datetime.datetime.now()
+
+        print(f"time remain: {(end_time-start_time)*(10000-i)} --- difference drop {i}: pre_ece: {baseline_results['pre_ece']-p_ece}")
+        drop_results.append(results)
+    torch.save(drop_results, f"output/results/{args.dataset}_{args.model_name}_drop.pth")

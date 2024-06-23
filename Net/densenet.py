@@ -41,7 +41,7 @@ class Transition(nn.Module):
 
 
 class DenseNet(nn.Module):
-    def __init__(self, block, nblocks, growth_rate=12, reduction=0.5, num_classes=10, temp=1.0):
+    def __init__(self, block, nblocks, growth_rate=12, reduction=0.5, num_classes=10, temp=1.0, feature_clamp=1e6):
         super(DenseNet, self).__init__()
         self.growth_rate = growth_rate
         self.temp = temp
@@ -72,6 +72,7 @@ class DenseNet(nn.Module):
 
         self.bn = nn.BatchNorm2d(num_planes)
         self.linear = nn.Linear(num_planes, num_classes)
+        self.feature_clamp = feature_clamp 
 
     def _make_dense_layers(self, block, in_planes, nblock):
         layers = []
@@ -87,8 +88,10 @@ class DenseNet(nn.Module):
         out = self.trans3(self.dense3(out))
         out = self.dense4(out)
         out = F.avg_pool2d(F.relu(self.bn(out)), 4)
-        out = out.view(out.size(0), -1)
-        out = self.linear(out) / self.temp
+        feature = out.view(out.size(0), -1)
+        # clamp the feature to constant c
+        feature = torch.clamp(feature, max=self.feature_clamp)
+        out = self.linear(feature) / self.temp
         return out
 
 

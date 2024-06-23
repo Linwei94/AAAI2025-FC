@@ -170,7 +170,7 @@ class ECELoss(nn.Module):
         self.bin_lowers = bin_boundaries[:-1]
         self.bin_uppers = bin_boundaries[1:]
 
-    def forward(self, logits, labels):
+    def forward(self, logits, labels, features=None):
         softmaxes = F.softmax(logits, dim=1)
         confidences, predictions = torch.max(softmaxes, 1)
         accuracies = predictions.eq(labels)
@@ -183,6 +183,28 @@ class ECELoss(nn.Module):
             if prop_in_bin.item() > 0:
                 accuracy_in_bin = accuracies[in_bin].float().mean()
                 avg_confidence_in_bin = confidences[in_bin].mean()
+
+                ### TODO
+                if bin_upper == 1:
+                    # get all the index of in_bin data
+                    indexs = torch.nonzero(in_bin).squeeze()
+                    # # get the confidence values of in_bin data
+                    # conf_in_bin = confidences[indexs]
+                    # # get the index with high calibration error samples
+                    # high_ce_indexs = torch.argsort(torch.abs(conf_in_bin - accuracy_in_bin), descending=True)
+                    # # check the norm of the high calibration error samples
+                    # norm_high_ce = torch.norm(conf_in_bin[high_ce_indexs], p=2)
+                    # # get the indexs of wrongly classified samples
+                    # wrong_indexs = torch.nonzero(accuracies.eq(0)).squeeze()
+                    # # save to playground
+                    # torch.save(in_bin, 'playground/in_bin.pth')
+                    # torch.save(high_ce_indexs, 'playground/high_ce_indexs.pth')
+                    # torch.save(wrong_indexs, 'playground/wrong_indexs.pth')
+                    # torch.save(indexs, 'playground/indexs.pth')
+                    # torch.save(features, 'playground/features.pth')
+                    # torch.save(confidences, 'playground/confidences.pth')
+
+
                 ece += torch.abs(avg_confidence_in_bin - accuracy_in_bin) * prop_in_bin
 
         return ece

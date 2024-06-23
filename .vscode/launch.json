@@ -5,6 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "evaluate",
+            "type": "python",
+            "request": "launch",
+            "program": "evaluate.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--feature_clamp", "100",
+                "--model-name", "resnet50",
+                "--saved_model_name", "resnet50_cross_entropy_350.model",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1",
+                "WANDB_MODE": "disabled"
+            }
+        },
+        {
             "name": "c10",
             "type": "python",
             "request": "launch",
@@ -12,8 +29,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "--model", "resnet18",
-                "--loss", "mmce"
+                "--model", "resnet50",
             ],
             "env": {
                 "CUDA_VISIBLE_DEVICES": "0",

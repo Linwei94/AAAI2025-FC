@@ -73,7 +73,7 @@ def get_train_valid_loader(batch_size,
     data_dir = './data'
     train_dataset = datasets.CIFAR10(
         root=data_dir, train=True,
-        download=True, transform=train_transform,
+        download=False, transform=train_transform,
     )
 
     valid_dataset = datasets.CIFAR10(
@@ -121,9 +121,10 @@ def get_train_valid_loader(batch_size,
 
 
 def get_test_loader(batch_size,
-                    shuffle=True,
+                    shuffle=False,
                     num_workers=4,
-                    pin_memory=False):
+                    pin_memory=False,
+                    drop_index=None):
     """
     Utility function for loading and returning a multi-process
     test iterator over the CIFAR-10 dataset.
@@ -153,7 +154,7 @@ def get_test_loader(batch_size,
     data_dir = './data'
     dataset = datasets.CIFAR10(
         root=data_dir, train=False,
-        download=True, transform=transform,
+        download=False, transform=transform, drop_index=drop_index,
     )
 
     data_loader = torch.utils.data.DataLoader(

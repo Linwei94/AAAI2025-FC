@@ -49,7 +49,7 @@ class BasicBlock(nn.Module):
 
 class Wide_ResNet_Cifar(nn.Module):
 
-    def __init__(self, block, layers, wfactor, num_classes=10, temp=1.0):
+    def __init__(self, block, layers, wfactor, num_classes=10, temp=1.0, feature_clamp=1e6):
         super(Wide_ResNet_Cifar, self).__init__()
         self.inplanes = 16
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
@@ -69,6 +69,7 @@ class Wide_ResNet_Cifar(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
+        self.feature_clamp = feature_clamp  
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
@@ -96,8 +97,10 @@ class Wide_ResNet_Cifar(nn.Module):
         x = self.layer3(x)
 
         x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x) / self.temp
+        feature = x.view(x.size(0), -1)
+        # clamp the feature to constant c
+        feature = torch.clamp(feature, max=self.feature_clamp) 
+        x = self.fc(feature) / self.temp
 
         return x
 
