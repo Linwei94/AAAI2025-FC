@@ -1,8 +1,9 @@
 data
 __pycache__
+vscode
 tiny-imagenet-200
 *.model
 wandb/
 output/
-.vscode
+
 
