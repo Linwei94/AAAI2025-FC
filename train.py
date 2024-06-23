@@ -12,22 +12,22 @@ import json
 import sys
 import wandb
 # Import dataloaders
-import Data.cifar10 as cifar10
-import Data.cifar100 as cifar100
-import Data.tiny_imagenet as tiny_imagenet
+import dataset.cifar10 as cifar10
+import dataset.cifar100 as cifar100
+import dataset.tiny_imagenet as tiny_imagenet
 from utils.metrics import test_classification_net
 
 
 # Import network models
-from Net.resnet import resnet18, resnet34, resnet50, resnet101, resnet110
-from Net.resnet_tiny_imagenet import resnet50 as resnet50_ti
-from Net.wide_resnet import wide_resnet_cifar
-from Net.densenet import densenet121
+from models.resnet import resnet18, resnet34, resnet50, resnet101, resnet110
+from models.resnet_tiny_imagenet import resnet50 as resnet50_ti
+from models.wide_resnet import wide_resnet_cifar
+from models.densenet import densenet121
 
 # Import loss functions
-from Losses.loss import cross_entropy, focal_loss, focal_loss_adaptive
-from Losses.loss import mmce, mmce_weighted
-from Losses.loss import brier_score
+from losses.loss import cross_entropy, focal_loss, focal_loss_adaptive
+from losses.loss import mmce, mmce_weighted
+from losses.loss import brier_score
 
 # Import train and validation utilities
 from train_utils import train_single_epoch, test_single_epoch

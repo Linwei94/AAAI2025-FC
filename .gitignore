@@ -4,3 +4,5 @@ tiny-imagenet-200
 *.model
 wandb/
 output/
+.vscode/
+

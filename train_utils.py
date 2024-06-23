@@ -6,9 +6,9 @@ import torch
 from torch.nn import functional as F
 from torch import nn
 
-from Losses.loss import cross_entropy, focal_loss, focal_loss_adaptive
-from Losses.loss import mmce, mmce_weighted
-from Losses.loss import brier_score
+from losses.loss import cross_entropy, focal_loss, focal_loss_adaptive
+from losses.loss import mmce, mmce_weighted
+from losses.loss import brier_score
 
 
 loss_function_dict = {
