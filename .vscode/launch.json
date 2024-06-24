@@ -10,11 +10,12 @@
             "request": "launch",
             "program": "evaluate.py",
             "console": "integratedTerminal",
-            "justMyCode": false,
+            "justMyCode": true,
             "args": [
-                "--feature_clamp", "100",
+                "--cverror", "nll",
+                "--dataset", "cifar10",
                 "--model-name", "resnet50",
-                "--saved_model_name", "resnet50_cross_entropy_350.model",
+                "--saved_model_name", "resnet50_c10_cross_entropy.model",
             ],
             "env": {
                 "CUDA_VISIBLE_DEVICES": "1",

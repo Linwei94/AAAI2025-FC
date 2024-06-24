@@ -93,15 +93,15 @@ class ResNet(nn.Module):
         out = self.layer4(out)
         out = F.avg_pool2d(out, 4)
         feature = out.view(out.size(0), -1)
-        # clamp the feature to constant c
-        feature = torch.clamp(feature, max=self.feature_clamp)
 
         out = self.fc(feature) / self.temp
         if return_feature:
             return out, feature
         else:
             return out
-
+    
+    def classifier(self, x):
+        return self.fc(x)
 
 def resnet18(temp=1.0, **kwargs):
     model = ResNet(BasicBlock, [2, 2, 2, 2], temp=temp, **kwargs)

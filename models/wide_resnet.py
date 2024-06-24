@@ -87,7 +87,7 @@ class Wide_ResNet_Cifar(nn.Module):
 
         return nn.Sequential(*layers)
 
-    def forward(self, x):
+    def forward(self, x, return_feature=False):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -98,12 +98,16 @@ class Wide_ResNet_Cifar(nn.Module):
 
         x = self.avgpool(x)
         feature = x.view(x.size(0), -1)
-        # clamp the feature to constant c
-        feature = torch.clamp(feature, max=self.feature_clamp) 
         x = self.fc(feature) / self.temp
+        if return_feature:
+            return x, feature
+        else:
+            return x
 
-        return x
 
+    def classifier(self, x):
+        return self.fc(x)
+    
 
 def wide_resnet_cifar(temp=1.0, num_classes=10, depth=26, width=10, **kwargs):
     assert (depth - 2) % 6 == 0

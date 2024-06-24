@@ -81,7 +81,7 @@ class DenseNet(nn.Module):
             in_planes += self.growth_rate
         return nn.Sequential(*layers)
 
-    def forward(self, x):
+    def forward(self, x, return_feature=False):
         out = self.conv1(x)
         out = self.trans1(self.dense1(out))
         out = self.trans2(self.dense2(out))
@@ -89,10 +89,15 @@ class DenseNet(nn.Module):
         out = self.dense4(out)
         out = F.avg_pool2d(F.relu(self.bn(out)), 4)
         feature = out.view(out.size(0), -1)
-        # clamp the feature to constant c
-        feature = torch.clamp(feature, max=self.feature_clamp)
         out = self.linear(feature) / self.temp
-        return out
+        if return_feature:
+            return out, feature
+        else:
+            return out
+    
+
+    def classifier(self, x):
+        return self.linear(x)
 
 
 

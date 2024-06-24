@@ -114,7 +114,7 @@ def l2_error(confs, preds, labels, num_bins=15):
     return l2_error
 
 
-def test_classification_net_logits(logits, labels):
+def test_classification_net_logits(logits, labels, probs=None):
     '''
     This function reports classification accuracy and confusion matrix given logits and labels
     from a model.
@@ -123,11 +123,14 @@ def test_classification_net_logits(logits, labels):
     predictions_list = []
     confidence_vals_list = []
 
-    softmax = F.softmax(logits, dim=1)
+    if logits is not None:
+        softmax = F.softmax(logits, dim=1)
+    else:
+        softmax = probs
     confidence_vals, predictions = torch.max(softmax, dim=1)
     labels_list.extend(labels.cpu().numpy().tolist())
     predictions_list.extend(predictions.cpu().numpy().tolist())
-    confidence_vals_list.extend(confidence_vals.cpu().numpy().tolist())
+    confidence_vals_list.extend(confidence_vals.cpu().detach().numpy().tolist())
     accuracy = accuracy_score(labels_list, predictions_list)
     return confusion_matrix(labels_list, predictions_list), accuracy, labels_list,\
         predictions_list, confidence_vals_list
@@ -170,12 +173,15 @@ class ECELoss(nn.Module):
         self.bin_lowers = bin_boundaries[:-1]
         self.bin_uppers = bin_boundaries[1:]
 
-    def forward(self, logits, labels, features=None):
-        softmaxes = F.softmax(logits, dim=1)
+    def forward(self, logits, labels, features=None, probs=None):
+        if logits is not None:
+            softmaxes = F.softmax(logits, dim=1)
+        else:
+            softmaxes = probs
         confidences, predictions = torch.max(softmaxes, 1)
         accuracies = predictions.eq(labels)
 
-        ece = torch.zeros(1, device=logits.device)
+        ece = torch.zeros(1, device=labels.device)
         for bin_lower, bin_upper in zip(self.bin_lowers, self.bin_uppers):
             # Calculated |confidence - accuracy| in each bin
             in_bin = confidences.gt(bin_lower.item()) * confidences.le(bin_upper.item())
@@ -223,15 +229,18 @@ class AdaptiveECELoss(nn.Module):
         return np.interp(np.linspace(0, npt, self.nbins + 1),
                      np.arange(npt),
                      np.sort(x))
-    def forward(self, logits, labels):
-        softmaxes = F.softmax(logits, dim=1)
+    def forward(self, logits, labels, probs=None):
+        if logits is not None:
+            softmaxes = F.softmax(logits, dim=1)
+        else:
+            softmaxes = probs
         confidences, predictions = torch.max(softmaxes, 1)
         accuracies = predictions.eq(labels)
         n, bin_boundaries = np.histogram(confidences.cpu().detach(), self.histedges_equalN(confidences.cpu().detach()))
         #print(n,confidences,bin_boundaries)
         self.bin_lowers = bin_boundaries[:-1]
         self.bin_uppers = bin_boundaries[1:]
-        ece = torch.zeros(1, device=logits.device)
+        ece = torch.zeros(1, device=labels.device)
         for bin_lower, bin_upper in zip(self.bin_lowers, self.bin_uppers):
             # Calculated |confidence - accuracy| in each bin
             in_bin = confidences.gt(bin_lower.item()) * confidences.le(bin_upper.item())
@@ -253,14 +262,17 @@ class ClasswiseECELoss(nn.Module):
         self.bin_lowers = bin_boundaries[:-1]
         self.bin_uppers = bin_boundaries[1:]
 
-    def forward(self, logits, labels):
+    def forward(self, logits, labels, probs=None):
         num_classes = int((torch.max(labels) + 1).item())
-        softmaxes = F.softmax(logits, dim=1)
+        if logits is not None:
+            softmaxes = F.softmax(logits, dim=1)
+        else:
+            softmaxes = probs
         per_class_sce = None
 
         for i in range(num_classes):
             class_confidences = softmaxes[:, i]
-            class_sce = torch.zeros(1, device=logits.device)
+            class_sce = torch.zeros(1, device=labels.device)
             labels_in_class = labels.eq(i) # one-hot vector of all positions where the label belongs to the class i
 
             for bin_lower, bin_upper in zip(self.bin_lowers, self.bin_uppers):

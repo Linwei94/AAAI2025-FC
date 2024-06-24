@@ -24,9 +24,13 @@ class ModelWithTemperature(nn.Module):
         self.log = log
 
 
-    def forward(self, input):
-        logits = self.model(input)
-        return self.temperature_scale(logits)
+    def forward(self, input, return_feature=None):
+        if return_feature == None:
+            logits = self.model(input)
+            return self.temperature_scale(logits)
+        else:
+            logits, features = self.model(input, return_feature=True)
+            return self.temperature_scale(logits), features
 
 
     def temperature_scale(self, logits):
@@ -103,3 +107,6 @@ class ModelWithTemperature(nn.Module):
 
     def get_temperature(self):
         return self.temperature
+    
+    def classifier(self, features):
+        return self.model.classifier(features)

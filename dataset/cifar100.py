@@ -73,7 +73,7 @@ def get_train_valid_loader(batch_size,
     data_dir = './data'
     train_dataset = datasets.CIFAR100(
         root=data_dir, train=True,
-        download=True, transform=train_transform,
+        download=False, transform=train_transform,
     )
 
     valid_dataset = datasets.CIFAR100(
@@ -154,7 +154,7 @@ def get_test_loader(batch_size,
     data_dir = './data'
     dataset = datasets.CIFAR100(
         root=data_dir, train=False,
-        download=True, transform=transform,
+        download=False, transform=transform,
     )
 
     data_loader = torch.utils.data.DataLoader(

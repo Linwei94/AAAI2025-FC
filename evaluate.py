@@ -1,17 +1,17 @@
-import os
-import sys
 import torch
-import random
 import argparse
 from torch import nn
-import matplotlib.pyplot as plt
+import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
-import datetime
+import pandas as pd
+import numpy as np
+from omegaconf import OmegaConf # yaml config for group calibration
 
 # Import dataloaders
 import dataset.cifar10 as cifar10
 import dataset.cifar100 as cifar100
 import dataset.tiny_imagenet as tiny_imagenet
+import dataset.tiny_imagenet as imagenet
 
 # Import network architectures
 from models.resnet_tiny_imagenet import resnet50 as resnet50_ti
@@ -23,21 +23,27 @@ from models.densenet import densenet121
 from metrics.metrics import test_classification_net_logits
 from metrics.metrics import ECELoss, AdaptiveECELoss, ClasswiseECELoss
 
-# Import temperature scaling and NLL utilities
-from temperature_scaling import ModelWithTemperature
+# Import post hoc calibration methods
+from calibration.temperature_scaling import ModelWithTemperature
+from calibration.feature_clipping import ModelWithFeatureClipping
+from calibration.pts_cts_ets import calibrator, calibrator_mapping, dataloader, dataset_mapping, loss_mapping, opt
+from calibration.group_calibration.methods import calibrate
+
 
 
 # Dataset params
 dataset_num_classes = {
     'cifar10': 10,
     'cifar100': 100,
-    'tiny_imagenet': 200
+    'tiny_imagenet': 200,
+    'imagenet': 1000
 }
 
 dataset_loader = {
     'cifar10': cifar10,
     'cifar100': cifar100,
-    'tiny_imagenet': tiny_imagenet
+    'tiny_imagenet': tiny_imagenet,
+    'imagenet': imagenet
 }
 
 # Mapping model name to model function
@@ -99,24 +105,36 @@ def parseArgs():
     
     parser.add_argument("--drop_index", type=int, default=None,
                         dest="drop_index", help="Index to drop from the dataset")
-    
-
     return parser.parse_args()
 
 
-def get_logits_labels(data_loader, net):
+def get_logits_labels(data_loader, net, return_feature=False):
     logits_list = []
     labels_list = []
+    features_list = []
     net.eval()
-    with torch.no_grad():
-        for data, label in data_loader:
-            data = data.cuda()
-            logits = net(data)
-            logits_list.append(logits)
-            labels_list.append(label)
-        logits = torch.cat(logits_list).cuda()
-        labels = torch.cat(labels_list).cuda()
-    return logits, labels
+    if return_feature:
+        with torch.no_grad():
+            for data, label in data_loader:
+                data = data.cuda()
+                logits, features = net(data, return_feature=return_feature)
+                logits_list.append(logits)
+                labels_list.append(label)
+                features_list.append(features)
+            logits = torch.cat(logits_list).cuda()
+            labels = torch.cat(labels_list).cuda()
+            features = torch.cat(features_list).cuda()
+        return logits, labels, features
+    else:
+        with torch.no_grad():
+            for data, label in data_loader:
+                data = data.cuda()
+                logits = net(data)
+                logits_list.append(logits)
+                labels_list.append(label)
+            logits = torch.cat(logits_list).cuda()
+            labels = torch.cat(labels_list).cuda()
+        return logits, labels
 
 
 if __name__ == "__main__":
@@ -137,6 +155,7 @@ if __name__ == "__main__":
 
     dataset = args.dataset
     dataset_root = args.dataset_root
+    args.n_class = dataset_num_classes[dataset]
     model_name = args.model_name
     save_loc = args.save_loc
     saved_model_name = args.saved_model_name
@@ -174,7 +193,6 @@ if __name__ == "__main__":
     # args.feature_clamp = c/100
     drop_results = []
     args.feature_clamp = 100
-    baseline_results = torch.load(f"output/results/{args.dataset}_{args.model_name}_baseline.pth")
     model = models[model_name]
 
     net = model(num_classes=num_classes, temp=1.0, feature_clamp=args.feature_clamp)
@@ -182,63 +200,196 @@ if __name__ == "__main__":
     net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
     cudnn.benchmark = True
     net.load_state_dict(torch.load(args.save_loc + args.saved_model_name))
+    net.classifier = net.module.classifier
 
     nll_criterion = nn.CrossEntropyLoss().cuda()
     ece_criterion = ECELoss().cuda()
     adaece_criterion = AdaptiveECELoss().cuda()
     cece_criterion = ClasswiseECELoss().cuda()
 
+    # vanilla
     logits, labels = get_logits_labels(test_loader, net)
     conf_matrix, accuracy, _, _, _ = test_classification_net_logits(logits, labels)
+    ece = ece_criterion(logits, labels).item()
+    adaece = adaece_criterion(logits, labels).item()
+    cece = cece_criterion(logits, labels).item()
+    nll = nll_criterion(logits, labels).item()
 
-    scaled_model = ModelWithTemperature(net, args.log)
-    scaled_model.set_temperature(val_loader, cross_validate=cross_validation_error)
-    T_opt = scaled_model.get_temperature()
-    post_logits, post_labels = get_logits_labels(test_loader, scaled_model)
+    # TS
+    model_ts = ModelWithTemperature(net, args.log)
+    model_ts.set_temperature(val_loader, cross_validate=cross_validation_error)
+    T_opt_ts = model_ts.get_temperature()
+    logits_ts, labels_ts = get_logits_labels(test_loader, model_ts)
+    conf_matrix_ts, accuracy_ts, _, _, _ = test_classification_net_logits(logits_ts, labels_ts)
+    ece_ts = ece_criterion(logits_ts, labels_ts).item()
+    adaece_ts = adaece_criterion(logits_ts, labels_ts).item()
+    cece_ts = cece_criterion(logits_ts, labels_ts).item()
+    nll_ts = nll_criterion(logits_ts, labels_ts).item()
 
-    torch.save(logits, f"output/results/{args.dataset}_{args.model_name}_pre_logits.pth")
-    torch.save(labels, f"output/results/{args.dataset}_{args.model_name}_pre_labels.pth")
-    torch.save(post_logits, f"output/results/{args.dataset}_{args.model_name}_post_logits.pth")
-    torch.save(post_labels, f"output/results/{args.dataset}_{args.model_name}_post_labels.pth")
+    # FC
+    model_fc = ModelWithFeatureClipping(net)
+    model_fc.set_feature_clip(val_loader, cross_validate=cross_validation_error)
+    C_opt_fc = model_fc.get_feature_clip()
+    logits_fc, labels_fc = get_logits_labels(test_loader, model_fc)
+    conf_matrix_fc, accuracy_fc, _, _, _ = test_classification_net_logits(logits_fc, labels_fc)
+    ece_fc = ece_criterion(logits_fc, labels_fc).item()
+    adaece_fc = adaece_criterion(logits_fc, labels_fc).item()
+    cece_fc = cece_criterion(logits_fc, labels_fc).item()
+    nll_fc = nll_criterion(logits_fc, labels_fc).item()
+
+    # FC then TS
+    model_fc_ts = ModelWithTemperature(model_fc, args.log)
+    model_fc_ts.set_temperature(val_loader, cross_validate=cross_validation_error)
+    T_opt_fc_ts = model_fc_ts.get_temperature()
+    logits_fc_ts, labels_fc_ts = get_logits_labels(test_loader, model_fc_ts)
+    conf_matrix_fc_ts, accuracy_fc_ts, _, _, _ = test_classification_net_logits(logits_fc_ts, labels_fc_ts)
+    ece_fc_ts = ece_criterion(logits_fc_ts, labels_fc_ts).item()
+    adaece_fc_ts = adaece_criterion(logits_fc_ts, labels_fc_ts).item()
+    cece_fc_ts = cece_criterion(logits_fc_ts, labels_fc_ts).item()
+    nll_fc_ts = nll_criterion(logits_fc_ts, labels_fc_ts).item()
+
+    # ETS
+    valid_logits, valid_labels = get_logits_labels(val_loader, net)
+    test_logits, labels_ets = get_logits_labels(test_loader, net)
+    args.cal = 'ETS'
+    cbt = calibrator(args).cuda()
+    cbt.train(valid_logits, valid_labels)
+    logits_ets = cbt(test_logits)
+    conf_matrix_ets, accuracy_ets, _, _, _ = test_classification_net_logits(logits_ets, labels_ets)
+    ece_ets = ece_criterion(logits_ets, labels_ets).item()
+    adaece_ets = adaece_criterion(logits_ets, labels_ets).item()
+    cece_ets = cece_criterion(logits_ets, labels_ets).item()
+    nll_ets = nll_criterion(logits_ets, labels_ets).item()
+
+    # FC then ETS
+    valid_logits, valid_labels = get_logits_labels(val_loader, model_fc)
+    test_logits, labels_fc_ets = get_logits_labels(test_loader, model_fc)
+    args.cal = 'ETS'
+    cbt = calibrator(args).cuda()
+    cbt.train(valid_logits, valid_labels)
+    logits_fc_ets = cbt(test_logits)
+    conf_matrix_fc_ets, accuracy_fc_ets, _, _, _ = test_classification_net_logits(logits_fc_ets, labels_fc_ets)
+    ece_fc_ets = ece_criterion(logits_fc_ets, labels_fc_ets).item()
+    adaece_fc_ets = adaece_criterion(logits_fc_ets, labels_fc_ets).item()
+    cece_fc_ets = cece_criterion(logits_fc_ets, labels_fc_ets).item()
+    nll_fc_ets = nll_criterion(logits_fc_ets, labels_fc_ets).item()
+
+    # PTS
+    valid_logits, valid_labels = get_logits_labels(val_loader, net)
+    test_logits, labels_pts = get_logits_labels(test_loader, net)
+    args.cal = 'PTS'
+    cbt = calibrator(args).cuda()
+    cbt.train(valid_logits, valid_labels)
+    logits_pts = cbt(test_logits)
+    conf_matrix_pts, accuracy_pts, _, _, _ = test_classification_net_logits(logits_pts, labels_pts)
+    ece_pts = ece_criterion(logits_pts, labels_pts).item()
+    adaece_pts = adaece_criterion(logits_pts, labels_pts).item()
+    cece_pts = cece_criterion(logits_pts, labels_pts).item()
+    nll_pts = nll_criterion(logits_pts, labels_pts).item()
+    
+    # FC then PTS
+    valid_logits, valid_labels = get_logits_labels(val_loader, model_fc)
+    test_logits, labels_fc_pts = get_logits_labels(test_loader, model_fc)
+    args.cal = 'PTS'
+    cbt = calibrator(args).cuda()
+    cbt.train(valid_logits, valid_labels)
+    logits_fc_pts = cbt(test_logits)
+    conf_matrix_fc_pts, accuracy_fc_pts, _, _, _ = test_classification_net_logits(logits_fc_pts, labels_fc_pts)
+    ece_fc_pts = ece_criterion(logits_fc_pts, labels_fc_pts).item()
+    adaece_fc_pts = adaece_criterion(logits_fc_pts, labels_fc_pts).item()
+    cece_fc_pts = cece_criterion(logits_fc_pts, labels_fc_pts).item()
+    nll_fc_pts = nll_criterion(logits_fc_pts, labels_fc_pts).item()
+
+    # CTS
+    valid_logits, valid_labels = get_logits_labels(val_loader, net)
+    test_logits, labels_cts = get_logits_labels(test_loader, net)
+    args.cal = 'CTS'
+    cbt = calibrator(args).cuda()
+    cbt.train(valid_logits, valid_labels)
+    logits_cts = cbt(test_logits)
+    conf_matrix_cts, accuracy_cts, _, _, _ = test_classification_net_logits(logits_cts, labels_cts)
+    ece_cts = ece_criterion(logits_cts, labels_cts).item()
+    adaece_cts = adaece_criterion(logits_cts, labels_cts).item()
+    cece_cts = cece_criterion(logits_cts, labels_cts).item()
+    nll_cts = nll_criterion(logits_cts, labels_cts).item()
+    
+    # FC then CTS
+    valid_logits, valid_labels = get_logits_labels(val_loader, model_fc)
+    test_logits, labels_fc_cts = get_logits_labels(test_loader, model_fc)
+    args.cal = 'PTS'
+    cbt = calibrator(args).cuda()
+    cbt.train(valid_logits, valid_labels)
+    logits_fc_cts = cbt(test_logits)
+    conf_matrix_fc_cts, accuracy_fc_cts, _, _, _ = test_classification_net_logits(logits_fc_cts, labels_fc_cts)
+    ece_fc_cts = ece_criterion(logits_fc_cts, labels_fc_cts).item()
+    adaece_fc_cts = adaece_criterion(logits_fc_cts, labels_fc_cts).item()
+    cece_fc_cts = cece_criterion(logits_fc_cts, labels_fc_cts).item()
+    nll_fc_cts = nll_criterion(logits_fc_cts, labels_fc_cts).item()
+
+    # Group Calibration 
+    conf = OmegaConf.load("calibration/group_calibration/conf/method/group_calibration_combine_ets.yaml")
+    valid_logits, valid_labels, valid_features = get_logits_labels(val_loader, net, return_feature=True)
+    test_logits, labels_gc, test_features = get_logits_labels(test_loader, net, return_feature=True)
+    valid_logits, valid_labels, valid_features = valid_logits.cpu(), valid_labels.cpu(), valid_features.cpu()
+    test_logits, labels_gc, test_features = test_logits.cpu(), labels_gc.cpu(), test_features.cpu()
+    calibrated_test_test = calibrate(method_config=conf,
+                                        val_data={"logits": valid_logits, "labels": valid_labels, "features": valid_features},
+                                        test_train_data={"logits": valid_logits, "labels": valid_labels, "features": valid_features},
+                                        test_test_data={"logits": test_logits, "labels": labels_gc, "features": test_features},
+                                        seed=1,
+                                        cfg=None)
+    probs_gc = calibrated_test_test.get("prob", None)
+    conf_matrix_gc, accuracy_gc, _, _, _ = test_classification_net_logits(logits=None, labels=labels_gc, probs=probs_gc)
+    ece_gc = ece_criterion(logits=None, labels=labels_gc, probs=probs_gc).item()
+    adaece_gc = adaece_criterion(logits=None, labels=labels_gc, probs=probs_gc).item()
+    cece_gc = cece_criterion(logits=None, labels=labels_gc, probs=probs_gc).item()
+    nll_gc = torch.mean(-torch.log(probs_gc[range(len(labels_gc)), labels_gc])).item()
+
+    # FC then Group Calibration 
+    conf = OmegaConf.load("calibration/group_calibration/conf/method/group_calibration_combine_ets.yaml")
+    valid_logits, valid_labels, valid_features = get_logits_labels(val_loader, model_fc, return_feature=True)
+    test_logits, labels_fc_gc, test_features = get_logits_labels(test_loader, model_fc, return_feature=True)
+    valid_logits, valid_labels, valid_features = valid_logits.cpu(), valid_labels.cpu(), valid_features.cpu()
+    test_logits, labels_fc_gc, test_features = test_logits.cpu(), labels_fc_gc.cpu(), test_features.cpu()
+    calibrated_test_test = calibrate(method_config=conf,
+                                        val_data={"logits": valid_logits, "labels": valid_labels, "features": valid_features},
+                                        test_train_data={"logits": valid_logits, "labels": valid_labels, "features": valid_features},
+                                        test_test_data={"logits": test_logits, "labels": labels_fc_gc, "features": test_features},
+                                        seed=1,
+                                        cfg=None)
+    probs_fc_gc = calibrated_test_test.get("prob", None)
+    conf_matrix_fc_gc, accuracy_fc_gc, _, _, _ = test_classification_net_logits(logits=None, labels=labels_fc_gc, probs=probs_fc_gc)
+    ece_fc_gc = ece_criterion(logits=None, labels=labels_fc_gc, probs=probs_fc_gc).item()
+    adaece_fc_gc = adaece_criterion(logits=None, labels=labels_fc_gc, probs=probs_fc_gc).item()
+    cece_fc_gc = cece_criterion(logits=None, labels=labels_fc_gc, probs=probs_fc_gc).item()
+    nll_fc_gc = torch.mean(-torch.log(probs_fc_gc[range(len(labels_fc_gc)), labels_fc_gc])).item()
 
 
-
-    for i in range(10000):
-        start_time = datetime.datetime.now()
-
-        # remove index i from logits and labels
-        drop_logits = torch.cat([logits[:i], logits[i+1:]])
-        drop_labels = torch.cat([labels[:i], labels[i+1:]])
-        drop_post_logits = torch.cat([post_logits[:i], post_logits[i+1:]])
-        drop_post_labels = torch.cat([post_labels[:i], post_labels[i+1:]])
-        
-
-        p_ece = ece_criterion(drop_logits, drop_labels).item()
-        p_adaece = adaece_criterion(drop_logits, drop_labels).item()
-        p_cece = cece_criterion(drop_logits, drop_labels).item()
-        p_nll = nll_criterion(drop_logits, drop_labels).item()
-
-        ece = ece_criterion(drop_post_logits, drop_post_labels).item()
-        adaece = adaece_criterion(drop_post_logits, drop_post_labels).item()
-        cece = cece_criterion(drop_post_logits, drop_post_labels).item()
-        nll = nll_criterion(drop_post_logits, drop_post_labels).item()
-
-
-        # Test NLL & ECE & AdaECE & Classwise ECE
-        # print(f"c={args.feature_clamp} ------- acc={accuracy}, ece={p_ece:.4f}, postece={ece:.4f}, adaece={adaece:.4f}, cece={cece:.4f}, nll={nll:.4f}")
-        results = {
-            # "acc": accuracy,
-            "pre_ece": p_ece,
-            "pre_adaece": p_adaece,
-            "pre_cece": p_cece,
-            "pre_nll": p_nll,
-            "post_ece": ece,
-            "post_adaece": adaece,
-            "post_cece": cece,
-            "post_nll": nll,
-        }
-        end_time = datetime.datetime.now()
-
-        print(f"time remain: {(end_time-start_time)*(10000-i)} --- difference drop {i}: pre_ece: {baseline_results['pre_ece']-p_ece}")
-        drop_results.append(results)
-    torch.save(drop_results, f"output/results/{args.dataset}_{args.model_name}_drop.pth")
+    # print out a result table, drop the row index, decimal to 2
+    results_table = pd.DataFrame({
+        'Model': args.model_name,
+        'Dataset': args.dataset,
+        'ECE': [round(ece*100,2), round(ece_ts*100,2), round(ece_fc*100,2), round(ece_fc_ts*100,2), 
+                round(ece_ets*100,2), round(ece_fc_ets*100,2), round(ece_pts*100,2), round(ece_fc_pts*100,2),
+                round(ece_cts*100,2), round(ece_fc_cts*100,2), round(ece_gc*100,2), round(ece_fc_gc*100,2)],
+        'AdaECE': [round(adaece*100,2), round(adaece_ts*100,2), round(adaece_fc*100,2), round(adaece_fc_ts*100,2), 
+                   round(adaece_ets*100,2), round(adaece_fc_ets*100,2), round(adaece_pts*100,2), round(adaece_fc_pts*100,2),
+                   round(adaece_cts*100,2), round(adaece_fc_cts*100,2), round(adaece_gc*100,2), round(adaece_fc_gc*100,2)],
+        'CECE': [round(cece*100,2), round(cece_ts*100,2), round(cece_fc*100,2), round(cece_fc_ts*100,2), 
+                 round(cece_ets*100,2), round(cece_fc_ets*100,2), round(cece_pts*100,2), round(cece_fc_pts*100,2),
+                 round(cece_cts*100,2), round(cece_fc_cts*100,2), round(cece_gc*100,2), round(cece_fc_gc*100,2)],
+        'NLL': [round(nll,2), round(nll_ts,2), round(nll_fc,2), round(nll_fc_ts,2), round(nll_ets,2), round(nll_fc_ets,2), 
+                round(nll_pts,2), round(nll_fc_pts,2), round(nll_cts,2), round(nll_fc_cts,2), round(nll_gc,2), round(nll_fc_gc,2)],
+        'Accuracy': [round(accuracy*100,2), round(accuracy_ts*100,2), round(accuracy_fc*100,2), round(accuracy_fc_ts*100,2),
+                      round(accuracy_ets*100,2), round(accuracy_fc_ets*100,2), round(accuracy_pts*100,2), round(accuracy_fc_pts*100,2),
+                        round(accuracy_cts*100,2), round(accuracy_fc_cts*100,2), round(accuracy_gc*100,2), round(accuracy_fc_gc*100,2)]
+    }, index=['Vanilla Confidence', 
+              f'TS(T={round(T_opt_ts,2)})', 
+              f'FC(C={round(C_opt_fc,2)})', 
+              f'FC_TS(T={round(T_opt_fc_ts,2)})',
+                'ETS', f'FC_ETS',
+                'PTS', f'FC_PTS',
+                'CTS', f'FC_CTS',
+                'GC', f'FC_GC'])
+    print(results_table)
+    print(f"Latex scipts: {round(ece*100, 2)}&{round(ece_fc*100, 2)}({round(C_opt_fc,2)})&{round(ece_ts*100, 2)}&{round(ece_fc_ts*100, 2)}&{round(ece_ets*100, 2)}&{round(ece_fc_ets*100, 2)}&{round(ece_pts*100, 2)}&{round(ece_fc_pts*100, 2)}&{round(ece_cts*100, 2)}&{round(ece_fc_cts*100, 2)}&{round(ece_gc*100, 2)}&{round(ece_fc_gc*100, 2)}\\\\")
