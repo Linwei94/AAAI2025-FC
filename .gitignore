@@ -8,3 +8,5 @@ output/
 pretrained_weights/
 *.pkl
 *.pyc
+playground/
+*.pth
