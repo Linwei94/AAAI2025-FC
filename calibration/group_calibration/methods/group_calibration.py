@@ -138,8 +138,8 @@ def train_partitions(features,
                      w_net,
                      method_config):
     w_net_list = []
-    print("Generating partitions...")
-    for partition_i in tqdm(range(method_config.num_partitions)):
+    # print("Generating partitions...")
+    for partition_i in range(method_config.num_partitions):
         trained_tau, trained_w_net = optimize_group_fn(features.to("cuda:0"),
                                                        logits.to("cuda:0"),
                                                        labels.to("cuda:0"),
@@ -171,8 +171,8 @@ def calibrate_combine(val_features,
                                 method_config=method_config)
     
     calibrated_probs = []
-    print("Calibrating with partitions...")
-    for trained_w_net in tqdm(w_net_list):
+    # print("Calibrating with partitions...")
+    for trained_w_net in w_net_list:
 
         train_group_logits = trained_w_net(test_train_features)
         test_group_logits = trained_w_net(test_test_features)

@@ -97,8 +97,7 @@ class ResNet(nn.Module):
         out = self.fc(feature) / self.temp
         if return_feature:
             return out, feature
-        else:
-            return out
+        return out
     
     def classifier(self, x):
         return self.fc(x)

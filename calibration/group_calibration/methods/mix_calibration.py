@@ -165,9 +165,9 @@ def calibrate(
     n_class = train_logits.shape[1]
     train_labels = torch.nn.functional.one_hot(train_labels,
                                                num_classes=n_class)
-    train_logits = train_logits.numpy()
+    train_logits = train_logits.detach().numpy()
     train_labels = train_labels.numpy()
-    test_logits = test_logits.numpy()
+    test_logits = test_logits.detach().numpy()
 
     if "ets" in method_name:
         calibrated_prob = ets_calibrate(logit=train_logits,

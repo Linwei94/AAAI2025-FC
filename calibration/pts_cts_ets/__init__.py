@@ -8,7 +8,8 @@ from .utils import dataset_mapping, dataloader, expected_caibration_error, calib
 dataset_num_classes = {
     'cifar10': 10,
     'cifar100': 100,
-    'tiny_imagenet': 200
+    'tiny_imagenet': 200,
+    'imagenet': 1000
 }
 
 class calibrator(nn.Module):

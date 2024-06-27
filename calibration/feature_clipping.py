@@ -37,9 +37,12 @@ class ModelWithFeatureClipping(nn.Module):
 
     def feature_clipping(self, features):
         """
-        Perform feature clipping on logits
+        Perform feature clipping on features
         """
-        return torch.clamp(features, max=self.feature_clip)
+        return torch.clamp(features, max=self.feature_clip, min=-self.feature_clip)
+    
+
+
 
 
     def set_feature_clip(self,
@@ -68,12 +71,15 @@ class ModelWithFeatureClipping(nn.Module):
             labels = torch.cat(labels_list).cuda()
             features = torch.cat(features_list).cuda()
 
+
+
+
         nll_val = 10 ** 7
         ece_val = 10 ** 7
         C_opt_nll = float("inf")
         C_opt_ece = float("inf")
         C = 0.01
-        for _ in range(300):
+        for _ in range(1):
             self.feature_clip = C
             self.cuda()
             after_clipping_nll = nll_criterion(self.classifier(self.feature_clipping(features)), labels).item()
@@ -98,3 +104,58 @@ class ModelWithFeatureClipping(nn.Module):
 
     def get_feature_clip(self):
         return self.feature_clip
+    
+# implemented as a post hoc calibrator
+class FeatureClippingCalibrator(nn.Module):
+    def __init__(self, model, cross_validate='ece'):
+        super(FeatureClippingCalibrator, self).__init__()
+        self.cross_validate = cross_validate
+        self.feature_clip = float("inf")
+        self.ece_criterion = ECELoss().cuda()
+        self.nll_criterion = nn.CrossEntropyLoss().cuda()
+        self.model = model
+        self.classifier = self.model.classifier
+
+    def get_feature_clip(self):
+        return self.feature_clip
+    
+    def set_feature_clip(self, features_val, logits_val, labels_val):
+        nll_val = float("inf")
+        ece_val = float("inf")
+        C_opt_nll = float("inf")
+        C_opt_ece = float("inf")
+        self.feature_clip = float("inf")
+        self.feature_clip_bottom = -float("inf")
+
+        for q in range(2000):
+            self.feature_clip = q/100
+            logits_after_clipping = self.classifier(self.feature_clipping(features_val))
+            after_clipping_nll = self.nll_criterion(logits_after_clipping, labels_val).item()
+            after_clipping_ece = self.ece_criterion(logits_after_clipping, labels_val).item()
+
+            if nll_val > after_clipping_nll:
+                C_opt_nll = self.feature_clip
+                nll_val = after_clipping_nll
+
+            if ece_val > after_clipping_ece:
+                C_opt_ece = self.feature_clip
+                ece_val = after_clipping_ece
+
+        if self.cross_validate == 'ece':
+            self.feature_clip = C_opt_ece
+        elif self.cross_validate == 'nll':
+            self.feature_clip = C_opt_nll
+
+
+        self.cuda()
+        return self
+    
+    def feature_clipping(self, features):
+        """
+        Perform feature clipping on logits
+        """
+        return torch.clamp(features, max=self.feature_clip)
+    
+
+    def forward(self, features):
+        return self.classifier(self.feature_clipping(features))

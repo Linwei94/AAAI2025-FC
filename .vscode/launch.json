@@ -5,51 +5,37 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "evaluate",
+            "name": "evaluate cifar10",
             "type": "python",
             "request": "launch",
             "program": "evaluate.py",
             "console": "integratedTerminal",
-            "justMyCode": true,
+            "justMyCode": false,
             "args": [
                 "--cverror", "nll",
                 "--dataset", "cifar10",
                 "--model-name", "resnet50",
-                "--saved_model_name", "resnet50_c10_cross_entropy.model",
+                "--saved_model_name", "resnet50_c10_cross_entropy.model"
             ],
             "env": {
                 "CUDA_VISIBLE_DEVICES": "1",
                 "WANDB_MODE": "disabled"
             }
-        },
-        {
-            "name": "c10",
+        },{
+            "name": "evaluate imagenet",
             "type": "python",
             "request": "launch",
-            "program": "train.py",
+            "program": "evaluate.py",
             "console": "integratedTerminal",
-            "justMyCode": true,
+            "justMyCode": false,
             "args": [
-                "--model", "resnet50",
+                "--cverror", "entropy",
+                "--dataset", "imagenet",
+                "--model-name", "swin_b",
+                "--debug"
             ],
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0",
-                "WANDB_MODE": "disabled"
-            }
-        },
-        {
-            "name": "c100",
-            "type": "python",
-            "request": "launch",
-            "program": "train.py",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "args": [
-                "--model", "resnet18",
-                "--dataset", "cifar100"
-            ],
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "0",
+                "CUDA_VISIBLE_DEVICES": "1",
                 "WANDB_MODE": "disabled"
             }
         }

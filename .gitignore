@@ -1,6 +1,6 @@
 data
 __pycache__
-vscode
+.vscode
 tiny-imagenet-200
 *.model
 wandb/
@@ -10,3 +10,4 @@ pretrained_weights/
 *.pyc
 playground/
 *.pth
+pre_calculated_logits/
