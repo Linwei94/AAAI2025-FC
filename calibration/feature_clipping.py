@@ -154,7 +154,8 @@ class FeatureClippingCalibrator(nn.Module):
         """
         Perform feature clipping on logits
         """
-        return torch.clamp(features, max=self.feature_clip)
+        features = torch.clamp(features, max=self.feature_clip)
+        return features
     
 
     def forward(self, features):
