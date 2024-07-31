@@ -4,6 +4,26 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
+        {
+            "name": "fc2",
+            "type": "python",
+            "request": "launch",
+            "program": "evaluate.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--cverror", "nll",
+                "--dataset", "imagenet",
+                "--model-name", "resnet50",
+                "--loss", "cross_entropy",
+                "--fc_type", "fc2",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1",
+                "WANDB_MODE": "disabled"
+            }
+        },
         {
             "name": "evaluate cifar10",
             "type": "python",
@@ -15,7 +35,7 @@
                 "--cverror", "nll",
                 "--dataset", "cifar10",
                 "--model-name", "resnet50",
-                "--saved_model_name", "resnet50_c10_cross_entropy.model"
+                "--loss", "cross_entropy",
             ],
             "env": {
                 "CUDA_VISIBLE_DEVICES": "1",
@@ -29,10 +49,9 @@
             "console": "integratedTerminal",
             "justMyCode": false,
             "args": [
-                "--cverror", "entropy",
+                "--cverror", "nll",
                 "--dataset", "imagenet",
-                "--model-name", "swin_b",
-                "--debug"
+                "--model-name", "vit_l_16",
             ],
             "env": {
                 "CUDA_VISIBLE_DEVICES": "1",

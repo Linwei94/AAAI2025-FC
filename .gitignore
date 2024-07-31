@@ -11,3 +11,5 @@ pretrained_weights/
 playground/
 *.pth
 pre_calculated_logits/
+output/
+paper-figure/

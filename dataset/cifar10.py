@@ -154,7 +154,7 @@ def get_test_loader(batch_size,
     data_dir = './data'
     dataset = datasets.CIFAR10(
         root=data_dir, train=False,
-        download=False, transform=transform, drop_index=drop_index,
+        download=False, transform=transform,
     )
 
     data_loader = torch.utils.data.DataLoader(

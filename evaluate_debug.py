@@ -20,6 +20,7 @@ import dataset.tiny_imagenet as imagenet
 
 # Import network architectures
 from models.resnet import resnet50, resnet110
+from models.resnet_debug import resnet50_debug
 from models.wide_resnet import wide_resnet_cifar
 from models.densenet import densenet121
 from models.resnet_imagenet import ResNet_ImageNet
@@ -34,7 +35,6 @@ from metrics.metrics import ECELoss, AdaptiveECELoss, ClasswiseECELoss
 
 # Import post hoc calibration methods
 from calibration.feature_clipping import FeatureClippingCalibrator
-from calibration.feature_clipping import FeatureClippingCalibrator2
 from calibration.pts_cts_ets import calibrator, calibrator_mapping, dataloader, dataset_mapping, loss_mapping, opt
 from calibration.group_calibration.methods import calibrate
 
@@ -55,6 +55,7 @@ dataset_loader = {
 # Mapping model name to model function
 cifar_models = {
     'resnet50': resnet50,
+    'resnet50_debug': resnet50_debug,
     'resnet110': resnet110,
     'wide_resnet': wide_resnet_cifar,
     'densenet121': densenet121
@@ -109,7 +110,6 @@ def parseArgs():
                         help="whether to debug the code")
     parser.add_argument("--loss", type=str, default='cross_entropy')
     parser.add_argument("--save_loc", type=str, default='./pre_calculated_logits')
-    parser.add_argument("--fc_type", type=str, default='fc')
     
     
     return parser.parse_args()
@@ -247,18 +247,18 @@ if __name__ == "__main__":
 
     # if file not exist, calculated logits, feature and labels
     logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}.pt'
-    if not os.path.exists(logit_path):
-        logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
-        logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
+    # if not os.path.exists(logit_path):
+    logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
+    logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
 
-        torch.save({
-            'logits_val': logits_val,
-            'labels_val': labels_val,
-            'features_val': features_val,
-            'logits_test': logits_test,
-            'labels_test': labels_test,
-            'features_test': features_test,
-        }, logit_path)
+    torch.save({
+        'logits_val': logits_val,
+        'labels_val': labels_val,
+        'features_val': features_val,
+        'logits_test': logits_test,
+        'labels_test': labels_test,
+        'features_test': features_test,
+    }, logit_path)
 
     # load logits, feature and labels
     data = torch.load(logit_path)
@@ -272,34 +272,20 @@ if __name__ == "__main__":
     '''
     practice the feature clipping calibration
     '''
-    if args.fc_type == 'fc':
-        fc_cal = FeatureClippingCalibrator(net, cross_validate=cross_validation_error)
-        fc_cal.set_feature_clip(features_val, logits_val, labels_val)
-        C_opt_fc = fc_cal.get_feature_clip()
-        logits_val_fc, labels_val_fc, features_val_fc = fc_cal(features_val), labels_val, fc_cal.feature_clipping(features_val)
-        logits_test_fc, labels_test_fc, features_test_fc = fc_cal(features_test), labels_test, fc_cal.feature_clipping(features_test)
-        data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
-        data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
-        logits_val_fc = data['logits_val_fc']
-        labels_val_fc = data['labels_val_fc']
-        features_val_fc = data['features_val_fc']
-        logits_test_fc = data['logits_test_fc']
-        labels_test_fc = data['labels_test_fc']
-        features_test_fc = data['features_test_fc']
-    elif args.fc_type == 'fc2':
-        fc_cal = FeatureClippingCalibrator2(net, cross_validate=cross_validation_error)
-        fc_cal.set_feature_clip(features_val, logits_val, labels_val)
-        C_opt_fc = fc_cal.get_feature_clip()
-        logits_val_fc, labels_val_fc, features_val_fc = fc_cal.feature_clipping(logits_val), labels_val, features_val
-        logits_test_fc, labels_test_fc, features_test_fc = fc_cal.feature_clipping(logits_test), labels_test, features_test
-        data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
-        data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
-        logits_val_fc = data['logits_val_fc']
-        labels_val_fc = data['labels_val_fc']
-        features_val_fc = data['features_val_fc']
-        logits_test_fc = data['logits_test_fc']
-        labels_test_fc = data['labels_test_fc']
-        features_test_fc = data['features_test_fc']
+    fc_cal = FeatureClippingCalibrator(net, cross_validate=cross_validation_error)
+    fc_cal.set_feature_clip(features_val, logits_val, labels_val)
+    # fc_cal.feature_clip=args.feature_clamp
+    C_opt_fc = fc_cal.get_feature_clip()
+    logits_val_fc, labels_val_fc, features_val_fc = fc_cal(features_val), labels_val, fc_cal.feature_clipping(features_val)
+    logits_test_fc, labels_test_fc, features_test_fc = fc_cal(features_test), labels_test, fc_cal.feature_clipping(features_test)
+    data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
+    data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
+    logits_val_fc = data['logits_val_fc']
+    labels_val_fc = data['labels_val_fc']
+    features_val_fc = data['features_val_fc']
+    logits_test_fc = data['logits_test_fc']
+    labels_test_fc = data['labels_test_fc']
+    features_test_fc = data['features_test_fc']
 
     fc_logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}_fc.pt'
     torch.save(data, fc_logit_path)

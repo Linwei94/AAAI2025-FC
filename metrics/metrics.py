@@ -180,6 +180,7 @@ class ECELoss(nn.Module):
             softmaxes = probs
         confidences, predictions = torch.max(softmaxes, 1)
         accuracies = predictions.eq(labels)
+        ce_per_sample = torch.zeros_like(confidences)
 
         ece = torch.zeros(1, device=labels.device)
         for bin_lower, bin_upper in zip(self.bin_lowers, self.bin_uppers):
@@ -209,10 +210,8 @@ class ECELoss(nn.Module):
                     # torch.save(indexs, 'playground/indexs.pth')
                     # torch.save(features, 'playground/features.pth')
                     # torch.save(confidences, 'playground/confidences.pth')
-
-
+                ce_per_sample[in_bin]=torch.abs(confidences[in_bin] - accuracy_in_bin)
                 ece += torch.abs(avg_confidence_in_bin - accuracy_in_bin) * prop_in_bin
-
         return ece
 
 
