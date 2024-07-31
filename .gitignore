@@ -1,7 +1,6 @@
 data
 __pycache__
 .vscode
-tiny-imagenet-200
 *.model
 wandb/
 output/
@@ -12,4 +11,4 @@ playground/
 *.pth
 pre_calculated_logits/
 output/
-paper-figure/
+paper-figure
