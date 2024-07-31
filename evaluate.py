@@ -15,18 +15,14 @@ import os
 # Import dataloaders
 import dataset.cifar10 as cifar10
 import dataset.cifar100 as cifar100
-import dataset.tiny_imagenet as tiny_imagenet
-import dataset.tiny_imagenet as imagenet
 
 # Import network architectures
 from models.resnet import resnet50, resnet110
-from models.wide_resnet import wide_resnet_cifar
 from models.densenet import densenet121
 from models.resnet_imagenet import ResNet_ImageNet
 from models.densenet_imagenet import DenseNet121_ImageNet
 from models.wide_resnet_imagenet import Wide_ResNet_ImageNet
 from models.mobilenet_v2_imagenet import MobileNet_V2_ImageNet
-from models.efficientnet_b0_imagenet import EfficientNet_B0_ImageNet
 
 # Import metrics to compute
 from metrics.metrics import test_classification_net_logits
@@ -34,7 +30,6 @@ from metrics.metrics import ECELoss, AdaptiveECELoss, ClasswiseECELoss
 
 # Import post hoc calibration methods
 from calibration.feature_clipping import FeatureClippingCalibrator
-from calibration.feature_clipping import FeatureClippingCalibrator2
 from calibration.pts_cts_ets import calibrator, calibrator_mapping, dataloader, dataset_mapping, loss_mapping, opt
 from calibration.group_calibration.methods import calibrate
 
@@ -56,7 +51,6 @@ dataset_loader = {
 cifar_models = {
     'resnet50': resnet50,
     'resnet110': resnet110,
-    'wide_resnet': wide_resnet_cifar,
     'densenet121': densenet121
 }
 imagenet_models = {
@@ -64,7 +58,6 @@ imagenet_models = {
     'densenet121': DenseNet121_ImageNet(weights=torchvision.models.DenseNet121_Weights.IMAGENET1K_V1),
     'wide_resnet': Wide_ResNet_ImageNet(weights=torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V1),
     'mobilenet_v2': MobileNet_V2_ImageNet(weights=torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V1),
-    'efficientnet_b0': EfficientNet_B0_ImageNet(weights=torchvision.models.EfficientNet_B0_Weights.IMAGENET1K_V1),
     'swin_b':torchvision.models.swin_b(weights=torchvision.models.Swin_B_Weights.IMAGENET1K_V1),
     'vit_b_16':torchvision.models.vit_b_16(weights=torchvision.models.ViT_B_16_Weights.IMAGENET1K_V1),
     'vit_l_16':torchvision.models.vit_l_16(weights=torchvision.models.ViT_L_16_Weights.IMAGENET1K_V1),
@@ -236,7 +229,7 @@ if __name__ == "__main__":
         net.cuda()
         net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
         cudnn.benchmark = True
-        net.load_state_dict(torch.load(os.path.join(args.save_loc, args.dataset, f"pretrained_weights/{args.model_name}_{args.loss}.model")))
+        net.load_state_dict(torch.load(os.path.join(args.save_loc, args.dataset, f"pretrained_weights/{args.model_name}_{args.loss}.model"), weights_only=True))
         net.classifier = net.module.classifier
     elif (args.dataset == 'imagenet'):
         model = imagenet_models[model_name]
@@ -261,7 +254,7 @@ if __name__ == "__main__":
         }, logit_path)
 
     # load logits, feature and labels
-    data = torch.load(logit_path)
+    data = torch.load(logit_path, weights_only=False)
     logits_val = data['logits_val']
     labels_val = data['labels_val']
     features_val = data['features_val']
@@ -272,34 +265,19 @@ if __name__ == "__main__":
     '''
     practice the feature clipping calibration
     '''
-    if args.fc_type == 'fc':
-        fc_cal = FeatureClippingCalibrator(net, cross_validate=cross_validation_error)
-        fc_cal.set_feature_clip(features_val, logits_val, labels_val)
-        C_opt_fc = fc_cal.get_feature_clip()
-        logits_val_fc, labels_val_fc, features_val_fc = fc_cal(features_val), labels_val, fc_cal.feature_clipping(features_val)
-        logits_test_fc, labels_test_fc, features_test_fc = fc_cal(features_test), labels_test, fc_cal.feature_clipping(features_test)
-        data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
-        data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
-        logits_val_fc = data['logits_val_fc']
-        labels_val_fc = data['labels_val_fc']
-        features_val_fc = data['features_val_fc']
-        logits_test_fc = data['logits_test_fc']
-        labels_test_fc = data['labels_test_fc']
-        features_test_fc = data['features_test_fc']
-    elif args.fc_type == 'fc2':
-        fc_cal = FeatureClippingCalibrator2(net, cross_validate=cross_validation_error)
-        fc_cal.set_feature_clip(features_val, logits_val, labels_val)
-        C_opt_fc = fc_cal.get_feature_clip()
-        logits_val_fc, labels_val_fc, features_val_fc = fc_cal.feature_clipping(logits_val), labels_val, features_val
-        logits_test_fc, labels_test_fc, features_test_fc = fc_cal.feature_clipping(logits_test), labels_test, features_test
-        data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
-        data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
-        logits_val_fc = data['logits_val_fc']
-        labels_val_fc = data['labels_val_fc']
-        features_val_fc = data['features_val_fc']
-        logits_test_fc = data['logits_test_fc']
-        labels_test_fc = data['labels_test_fc']
-        features_test_fc = data['features_test_fc']
+    fc_cal = FeatureClippingCalibrator(net, cross_validate=cross_validation_error)
+    fc_cal.set_feature_clip(features_val, logits_val, labels_val)
+    C_opt_fc = fc_cal.get_feature_clip()
+    logits_val_fc, labels_val_fc, features_val_fc = fc_cal(features_val), labels_val, fc_cal.feature_clipping(features_val)
+    logits_test_fc, labels_test_fc, features_test_fc = fc_cal(features_test), labels_test, fc_cal.feature_clipping(features_test)
+    data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
+    data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
+    logits_val_fc = data['logits_val_fc']
+    labels_val_fc = data['labels_val_fc']
+    features_val_fc = data['features_val_fc']
+    logits_test_fc = data['logits_test_fc']
+    labels_test_fc = data['labels_test_fc']
+    features_test_fc = data['features_test_fc']
 
     fc_logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}_fc.pt'
     torch.save(data, fc_logit_path)
@@ -350,7 +328,6 @@ if __name__ == "__main__":
         results['cece'].append(cece_fc)
         results['nll'].append(nll_fc)
         results['accuracy'].append(accuracy_fc)
-        print("&", f"{round(ece*100, 2):.2f}", "&\cellgray", f"{round(ece_fc*100, 2):.2f}({round(C_opt_fc,2):.2f})"," \greendown")
 
     # TS
     if "TS" in run_methods:

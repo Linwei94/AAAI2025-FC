@@ -18,3 +18,9 @@ All logits and features and extracted from the following models:
   - MobileNet-V2: torchvision.models.mobilenet_v2(weights=torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V1)
   - ViT-L-16: torchvision.models.vit_l_16(weights=torchvision.models.ViT_L_16_Weights.IMAGENET1K_V1)
 
+### Dependencies
+`python -m pip install -r requirements.txt`
+
+### Evalutation
+run `bash evaluate_scripts_post_hoc.sh` to evaluate post hoc methods
+run `bash evaluate_scripts_train-time.sh` to evaluate train time methods
