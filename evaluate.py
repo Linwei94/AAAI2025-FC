@@ -58,11 +58,7 @@ imagenet_models = {
     'densenet121': DenseNet121_ImageNet(weights=torchvision.models.DenseNet121_Weights.IMAGENET1K_V1),
     'wide_resnet': Wide_ResNet_ImageNet(weights=torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V1),
     'mobilenet_v2': MobileNet_V2_ImageNet(weights=torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V1),
-    'swin_b':torchvision.models.swin_b(weights=torchvision.models.Swin_B_Weights.IMAGENET1K_V1),
-    'vit_b_16':torchvision.models.vit_b_16(weights=torchvision.models.ViT_B_16_Weights.IMAGENET1K_V1),
     'vit_l_16':torchvision.models.vit_l_16(weights=torchvision.models.ViT_L_16_Weights.IMAGENET1K_V1),
-    'vit_b_32':torchvision.models.vit_b_32(weights=torchvision.models.ViT_B_32_Weights.IMAGENET1K_V1),
-    'vit_l_32':torchvision.models.vit_l_32(weights=torchvision.models.ViT_L_32_Weights.IMAGENET1K_V1),
 }
 
 def parseArgs():
