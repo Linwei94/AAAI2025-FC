@@ -56,8 +56,8 @@ cifar_models = {
 imagenet_models = {
     'resnet50': ResNet_ImageNet(weights=torchvision.models.ResNet50_Weights.IMAGENET1K_V1),
     'densenet121': DenseNet121_ImageNet(weights=torchvision.models.DenseNet121_Weights.IMAGENET1K_V1),
-    'wide_resnet': Wide_ResNet_ImageNet(weights=torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V1),
-    'mobilenet_v2': MobileNet_V2_ImageNet(weights=torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V1),
+    'wide_resnet': Wide_ResNet_ImageNet(weights=torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V2),
+    'mobilenet_v2': MobileNet_V2_ImageNet(weights=torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V2),
     'vit_l_16':torchvision.models.vit_l_16(weights=torchvision.models.ViT_L_16_Weights.IMAGENET1K_V1),
 }
 
@@ -76,7 +76,7 @@ def parseArgs():
     parser.add_argument("--dataset", type=str, default=default_dataset,
                         dest="dataset", help='dataset to test on')
     parser.add_argument("--dataset-root", type=str, default=dataset_root,
-                        dest="dataset_root", help='root path of the dataset (for tiny imagenet)')
+                        dest="dataset_root", help='root path of the dataset')
     parser.add_argument("--model-name", type=str, default=model_name,
                         dest="model_name", help='name of the model')
     parser.add_argument("--num-bins", type=int, default=num_bins, dest="num_bins",
@@ -230,9 +230,7 @@ if __name__ == "__main__":
     elif (args.dataset == 'imagenet'):
         model = imagenet_models[model_name]
         net = model.cuda()
-    
-    if args.debug:
-        logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
+
 
     # if file not exist, calculated logits, feature and labels
     logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}.pt'
@@ -257,6 +255,12 @@ if __name__ == "__main__":
     logits_test = data['logits_test']
     labels_test = data['labels_test']
     features_test = data['features_test']
+
+
+    if args.debug:
+        logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
+        logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
+
     
     '''
     practice the feature clipping calibration
