@@ -256,12 +256,17 @@ if __name__ == "__main__":
     labels_test = data['labels_test']
     features_test = data['features_test']
 
+    print("average confidence of validation set: ", torch.mean(torch.max(F.softmax(logits_val, dim=1), dim=1)[0]).item())
+    print("average confidence of test set: ", torch.mean(torch.max(F.softmax(logits_test, dim=1), dim=1)[0]).item())
 
     if args.debug:
         logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
         logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
 
-    
+
+    print("average confidence of validation set: ", torch.mean(torch.max(F.softmax(logits_val, dim=1), dim=1)[0]).item())
+    print("average confidence of test set: ", torch.mean(torch.max(F.softmax(logits_test, dim=1), dim=1)[0]).item())
+
     '''
     practice the feature clipping calibration
     '''
@@ -576,4 +581,3 @@ if __name__ == "__main__":
     lowest_results = "{:.2f}".format(round(min(results['ece'])*100,2))
     result_str = result_str.replace(lowest_results, '\\textbf{'+lowest_results+'}')
     print(result_str)
-
