@@ -16,7 +16,6 @@ import os
 import dataset.cifar10 as cifar10
 import dataset.cifar100 as cifar100
 import dataset.tiny_imagenet as tiny_imagenet
-import dataset.tiny_imagenet as imagenet
 
 # Import network architectures
 from models.resnet import resnet50, resnet110
@@ -26,7 +25,7 @@ from models.resnet_imagenet import ResNet_ImageNet
 from models.densenet_imagenet import DenseNet121_ImageNet
 from models.wide_resnet_imagenet import Wide_ResNet_ImageNet
 from models.mobilenet_v2_imagenet import MobileNet_V2_ImageNet
-from models.efficientnet_b0_imagenet import EfficientNet_B0_ImageNet
+# from models.efficientnet_b0_imagenet import EfficientNet_B0_ImageNet
 
 # Import metrics to compute
 from metrics.metrics import test_classification_net_logits
@@ -34,7 +33,6 @@ from metrics.metrics import ECELoss, AdaptiveECELoss, ClasswiseECELoss
 
 # Import post hoc calibration methods
 from calibration.feature_clipping import FeatureClippingCalibrator
-from calibration.feature_clipping import FeatureClippingCalibrator2
 from calibration.pts_cts_ets import calibrator, calibrator_mapping, dataloader, dataset_mapping, loss_mapping, opt
 from calibration.group_calibration.methods import calibrate
 
@@ -64,7 +62,7 @@ imagenet_models = {
     'densenet121': DenseNet121_ImageNet(weights=torchvision.models.DenseNet121_Weights.IMAGENET1K_V1),
     'wide_resnet': Wide_ResNet_ImageNet(weights=torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V1),
     'mobilenet_v2': MobileNet_V2_ImageNet(weights=torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V1),
-    'efficientnet_b0': EfficientNet_B0_ImageNet(weights=torchvision.models.EfficientNet_B0_Weights.IMAGENET1K_V1),
+    # 'efficientnet_b0': EfficientNet_B0_ImageNet(weights=torchvision.models.EfficientNet_B0_Weights.IMAGENET1K_V1),
     'swin_b':torchvision.models.swin_b(weights=torchvision.models.Swin_B_Weights.IMAGENET1K_V1),
     'vit_b_16':torchvision.models.vit_b_16(weights=torchvision.models.ViT_B_16_Weights.IMAGENET1K_V1),
     'vit_l_16':torchvision.models.vit_l_16(weights=torchvision.models.ViT_L_16_Weights.IMAGENET1K_V1),
@@ -74,7 +72,7 @@ imagenet_models = {
 
 def parseArgs():
     default_dataset = 'cifar10'
-    dataset_root = '/datasets'
+    dataset_root = '/share/datasets'
     num_bins = 15
     model_name = None
     train_batch_size = 128
@@ -286,21 +284,6 @@ if __name__ == "__main__":
         logits_test_fc = data['logits_test_fc']
         labels_test_fc = data['labels_test_fc']
         features_test_fc = data['features_test_fc']
-    elif args.fc_type == 'fc2':
-        fc_cal = FeatureClippingCalibrator2(net, cross_validate=cross_validation_error)
-        fc_cal.set_feature_clip(features_val, logits_val, labels_val)
-        C_opt_fc = fc_cal.get_feature_clip()
-        logits_val_fc, labels_val_fc, features_val_fc = fc_cal.feature_clipping(logits_val), labels_val, features_val
-        logits_test_fc, labels_test_fc, features_test_fc = fc_cal.feature_clipping(logits_test), labels_test, features_test
-        data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
-        data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
-        logits_val_fc = data['logits_val_fc']
-        labels_val_fc = data['labels_val_fc']
-        features_val_fc = data['features_val_fc']
-        logits_test_fc = data['logits_test_fc']
-        labels_test_fc = data['labels_test_fc']
-        features_test_fc = data['features_test_fc']
-
     fc_logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}_fc.pt'
     torch.save(data, fc_logit_path)
 
@@ -350,7 +333,7 @@ if __name__ == "__main__":
         results['cece'].append(cece_fc)
         results['nll'].append(nll_fc)
         results['accuracy'].append(accuracy_fc)
-        print("&", f"{round(ece*100, 2):.2f}", "&\cellgray", f"{round(ece_fc*100, 2):.2f}({round(C_opt_fc,2):.2f})"," \greendown")
+        print("&", f"{round(ece*100, 2):.2f}", "&\\cellgray", f"{round(ece_fc*100, 2):.2f}({round(C_opt_fc,2):.2f})","\\greendown")
 
     # TS
     if "TS" in run_methods:
@@ -571,12 +554,12 @@ if __name__ == "__main__":
     }, index=results['cal'])
     print("\n",results_table,"\n")
     result_str = f"ECE Latex scipts: " \
-    + f"{round(ece*100, 2):.2f}&\cellgray{round(ece_fc*100, 2):.2f}({round(C_opt_fc,2)}){' greendown' if ece_fc<ece else ' redup'}" \
-    + f"&{round(ece_ts*100, 2):.2f}&\cellgray{round(ece_fc_ts*100, 2):.2f}{' greendown' if ece_fc_ts<ece_ts else ' redup'}" \
-    + f"&{round(ece_ets*100, 2):.2f}&\cellgray{round(ece_fc_ets*100, 2):.2f}{' greendown' if ece_fc_ets<ece_ets else ' redup'}" \
-    + f"&{round(ece_pts*100, 2):.2f}&\cellgray{round(ece_fc_pts*100, 2):.2f}{' greendown' if ece_fc_pts<ece_pts else ' redup'}" \
-    + f"&{round(ece_cts*100, 2):.2f}&\cellgray{round(ece_fc_cts*100, 2):.2f}{' greendown' if ece_fc_cts<ece_cts else ' redup'}" \
-    + f"&{round(ece_gc*100, 2):.2f}&\cellgray{round(ece_fc_gc*100, 2):.2f}{' greendown' if ece_fc_gc<ece_gc else ' redup'}" \
+    + f"{round(ece*100, 2):.2f}&\\cellgray{round(ece_fc*100, 2):.2f}({round(C_opt_fc,2)}){' greendown' if ece_fc<ece else ' redup'}" \
+    + f"&{round(ece_ts*100, 2):.2f}&\\cellgray{round(ece_fc_ts*100, 2):.2f}{' greendown' if ece_fc_ts<ece_ts else ' redup'}" \
+    + f"&{round(ece_ets*100, 2):.2f}&\\cellgray{round(ece_fc_ets*100, 2):.2f}{' greendown' if ece_fc_ets<ece_ets else ' redup'}" \
+    + f"&{round(ece_pts*100, 2):.2f}&\\cellgray{round(ece_fc_pts*100, 2):.2f}{' greendown' if ece_fc_pts<ece_pts else ' redup'}" \
+    + f"&{round(ece_cts*100, 2):.2f}&\\cellgray{round(ece_fc_cts*100, 2):.2f}{' greendown' if ece_fc_cts<ece_cts else ' redup'}" \
+    + f"&{round(ece_gc*100, 2):.2f}&\\cellgray{round(ece_fc_gc*100, 2):.2f}{' greendown' if ece_fc_gc<ece_gc else ' redup'}" \
     + f"\\\\"
     # replace textcolor with \textcolor; replace blacktriangle with \blacktriangle
     result_str = result_str.replace('greendown', '\\greendown').replace('redup', '\\redup')
@@ -586,12 +569,12 @@ if __name__ == "__main__":
     print(result_str)
 
     result_str = f"AdaECE Latex scipts: " \
-    + f"{round(adaece*100, 2):.2f}&\cellgray{round(adaece_fc*100, 2):.2f}({round(C_opt_fc,2)}){' greendown' if adaece_fc<adaece else ' redup'}" \
-    + f"&{round(adaece_ts*100, 2):.2f}&\cellgray{round(adaece_fc_ts*100, 2):.2f}{' greendown' if adaece_fc_ts<adaece_ts else ' redup'}" \
-    + f"&{round(adaece_ets*100, 2):.2f}&\cellgray{round(adaece_fc_ets*100, 2):.2f}{' greendown' if adaece_fc_ets<adaece_ets else ' redup'}" \
-    + f"&{round(adaece_pts*100, 2):.2f}&\cellgray{round(adaece_fc_pts*100, 2):.2f}{' greendown' if adaece_fc_pts<adaece_pts else ' redup'}" \
-    + f"&{round(adaece_cts*100, 2):.2f}&\cellgray{round(adaece_fc_cts*100, 2):.2f}{' greendown' if adaece_fc_cts<adaece_cts else ' redup'}" \
-    + f"&{round(adaece_gc*100, 2):.2f}&\cellgray{round(adaece_fc_gc*100, 2):.2f}{' greendown' if adaece_fc_gc<adaece_gc else ' redup'}" \
+    + f"{round(adaece*100, 2):.2f}&\\cellgray{round(adaece_fc*100, 2):.2f}({round(C_opt_fc,2)}){' greendown' if adaece_fc<adaece else ' redup'}" \
+    + f"&{round(adaece_ts*100, 2):.2f}&\\cellgray{round(adaece_fc_ts*100, 2):.2f}{' greendown' if adaece_fc_ts<adaece_ts else ' redup'}" \
+    + f"&{round(adaece_ets*100, 2):.2f}&\\cellgray{round(adaece_fc_ets*100, 2):.2f}{' greendown' if adaece_fc_ets<adaece_ets else ' redup'}" \
+    + f"&{round(adaece_pts*100, 2):.2f}&\\cellgray{round(adaece_fc_pts*100, 2):.2f}{' greendown' if adaece_fc_pts<adaece_pts else ' redup'}" \
+    + f"&{round(adaece_cts*100, 2):.2f}&\\cellgray{round(adaece_fc_cts*100, 2):.2f}{' greendown' if adaece_fc_cts<adaece_cts else ' redup'}" \
+    + f"&{round(adaece_gc*100, 2):.2f}&\\cellgray{round(adaece_fc_gc*100, 2):.2f}{' greendown' if adaece_fc_gc<adaece_gc else ' redup'}" \
     + f"\\\\"
     # replace textcolor with \textcolor; replace blacktriangle with \blacktriangle
     result_str = result_str.replace('greendown', '\\greendown').replace('redup', '\\redup')

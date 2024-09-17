@@ -70,15 +70,15 @@ def get_train_valid_loader(batch_size,
         ])
 
     # load the dataset
-    data_dir = './data'
+    data_dir = '/share/datasets'
     train_dataset = datasets.CIFAR10(
         root=data_dir, train=True,
-        download=False, transform=train_transform,
+        download=True, transform=train_transform,
     )
 
     valid_dataset = datasets.CIFAR10(
         root=data_dir, train=True,
-        download=False, transform=valid_transform,
+        download=True, transform=valid_transform,
     )
 
     num_train = len(train_dataset)
@@ -93,7 +93,7 @@ def get_train_valid_loader(batch_size,
     if get_val_temp > 0:
         valid_temp_dataset = datasets.CIFAR10(
             root=data_dir, train=True,
-            download=False, transform=valid_transform,
+            download=True, transform=valid_transform,
         )
         split = int(np.floor(get_val_temp * split))
         valid_idx, valid_temp_idx = valid_idx[split:], valid_idx[:split]
@@ -151,10 +151,10 @@ def get_test_loader(batch_size,
         normalize,
     ])
 
-    data_dir = './data'
+    data_dir = '/share/datasets'
     dataset = datasets.CIFAR10(
         root=data_dir, train=False,
-        download=False, transform=transform,
+        download=True, transform=transform,
     )
 
     data_loader = torch.utils.data.DataLoader(

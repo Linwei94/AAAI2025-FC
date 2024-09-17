@@ -63,7 +63,7 @@ def get_train_valid_loader(batch_size,
     #    ])
 
     # load the dataset
-    data_dir = './data'
+    data_dir = '/share/datasets'
     train_dataset = datasets.SVHN(
         root=data_dir, split='train',
         download=True, transform=valid_transform,
@@ -128,7 +128,7 @@ def get_test_loader(batch_size,
         normalize,
     ])
 
-    data_dir = './data'
+    data_dir = '/share/datasets'
     dataset = datasets.SVHN(
         root=data_dir, split='test',
         download=True, transform=transform,
