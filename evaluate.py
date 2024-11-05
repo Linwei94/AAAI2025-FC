@@ -32,7 +32,7 @@ from metrics.metrics import ECELoss, AdaptiveECELoss, ClasswiseECELoss
 from calibration.feature_clipping import FeatureClippingCalibrator
 from calibration.pts_cts_ets import calibrator, calibrator_mapping, dataloader, dataset_mapping, loss_mapping, opt
 from calibration.group_calibration.methods import calibrate
-
+from calibrator import LogitClippingCalibrator
 
 
 # Dataset params
@@ -54,7 +54,7 @@ cifar_models = {
     'densenet121': densenet121
 }
 imagenet_models = {
-    'resnet50': ResNet_ImageNet(weights=torchvision.models.ResNet50_Weights.IMAGENET1K_V1),
+    'resnet50': ResNet_ImageNet(weights=torchvision.models.ResNet50_Weights.IMAGENET1K_V2),
     'densenet121': DenseNet121_ImageNet(weights=torchvision.models.DenseNet121_Weights.IMAGENET1K_V1),
     'wide_resnet': Wide_ResNet_ImageNet(weights=torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V2),
     'mobilenet_v2': MobileNet_V2_ImageNet(weights=torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V2),
@@ -63,7 +63,7 @@ imagenet_models = {
 
 def parseArgs():
     default_dataset = 'cifar10'
-    dataset_root = '/datasets'
+    dataset_root = '/share/datasets'
     num_bins = 15
     model_name = None
     train_batch_size = 128
@@ -97,7 +97,7 @@ def parseArgs():
     parser.add_argument("--debug", action="store_true", dest="debug",
                         help="whether to debug the code")
     parser.add_argument("--loss", type=str, default='cross_entropy')
-    parser.add_argument("--save_loc", type=str, default='./pre_calculated_logits')
+    parser.add_argument("--weights_dir", type=str, default='/share/pretrained_weights')
     parser.add_argument("--fc_type", type=str, default='fc')
     
     
@@ -221,12 +221,9 @@ if __name__ == "__main__":
     # Load the model
     if (args.dataset == 'cifar10' or args.dataset == 'cifar100'):
         model = cifar_models[model_name]
-        net = model(num_classes=num_classes)
-        net.cuda()
-        net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
-        cudnn.benchmark = True
-        net.load_state_dict(torch.load(os.path.join(args.save_loc, args.dataset, f"pretrained_weights/{args.model_name}_{args.loss}.model"), weights_only=True))
-        net.classifier = net.module.classifier
+        net = model(num_classes=num_classes).cuda()
+        net.load_state_dict(torch.load(f"{args.weights_dir}/{args.dataset}_{args.model_name}_{args.loss}.model", weights_only=True))
+        net.classifier = net.classifier
     elif (args.dataset == 'imagenet'):
         model = imagenet_models[model_name]
         net = model.cuda()
@@ -235,6 +232,7 @@ if __name__ == "__main__":
     # if file not exist, calculated logits, feature and labels
     logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}.pt'
     if not os.path.exists(logit_path):
+        os.makedirs(os.path.dirname(logit_path), exist_ok=True)
         logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
         logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
 
@@ -256,17 +254,6 @@ if __name__ == "__main__":
     labels_test = data['labels_test']
     features_test = data['features_test']
 
-    print("average confidence of validation set: ", torch.mean(torch.max(F.softmax(logits_val, dim=1), dim=1)[0]).item())
-    print("average confidence of test set: ", torch.mean(torch.max(F.softmax(logits_test, dim=1), dim=1)[0]).item())
-
-    if args.debug:
-        logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
-        logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
-
-
-    print("average confidence of validation set: ", torch.mean(torch.max(F.softmax(logits_val, dim=1), dim=1)[0]).item())
-    print("average confidence of test set: ", torch.mean(torch.max(F.softmax(logits_test, dim=1), dim=1)[0]).item())
-
     '''
     practice the feature clipping calibration
     '''
@@ -283,6 +270,18 @@ if __name__ == "__main__":
     logits_test_fc = data['logits_test_fc']
     labels_test_fc = data['labels_test_fc']
     features_test_fc = data['features_test_fc']
+
+    '''
+    practice the logit clipping calibration
+    '''
+    lc_cal = LogitClippingCalibrator()
+    C_opt_lc = lc_cal.fit(logits_val, labels_val)
+    logits_val_lc = lc_cal.calibrate(logits_val, return_logits=True)
+    logits_test_lc = lc_cal.calibrate(logits_test, return_logits=True)
+    labels_val_lc = data['labels_val']
+    labels_test_lc = data['labels_test']
+    data['logits_val_lc'], data['labels_val_lc'] = logits_val_lc.detach(), labels_val_lc.detach()
+    data['logits_test_lc'], data['labels_test_lc'] = logits_test_lc.detach(), labels_test_lc.detach()
 
     fc_logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}_fc.pt'
     torch.save(data, fc_logit_path)
@@ -303,7 +302,8 @@ if __name__ == "__main__":
         "nll":[],
         "accuracy":[]
     }
-    run_methods = ['Vanilla', 'FC', 'TS', 'FC_TS', 'ETS', 'FC_ETS', 'PTS', 'FC_PTS', 'CTS', 'FC_CTS', 'GC', 'FC_GC']
+    run_methods = ['Vanilla', 'LC', 'TS', 'FC', 'LC_TS', 'FC_TS']
+    # run_methods = ['Vanilla', 'LC', 'FC', 'LC_TS', 'FC_TS', 'ETS', 'FC_ETS', 'PTS', 'FC_PTS', 'CTS', 'FC_CTS', 'GC', 'FC_GC']
     # vanilla
     if "Vanilla" in run_methods:
         ece = ece_criterion(logits_test, labels_test).item()
@@ -318,6 +318,21 @@ if __name__ == "__main__":
         results['cece'].append(cece)
         results['nll'].append(nll)
         results['accuracy'].append(accuracy)
+
+    # LC
+    if "LC" in run_methods:
+        accuracy_lc = logits_test_lc.argmax(dim=1).eq(labels_test_lc).float().mean().item()
+        ece_lc = ece_criterion(logits_test_lc, labels_test_lc).item()
+        adaece_lc = adaece_criterion(logits_test_lc, labels_test_lc).item()
+        cece_lc = cece_criterion(logits_test_lc, labels_test_lc).item()
+        nll_lc = nll_criterion(logits_test_lc, labels_test_lc).item()
+        print(f"LC(C={round(C_opt_lc,2)}): ECE={round(ece_lc*100, 2)}, Accuracy={round(accuracy_lc*100, 2)}")
+        results['cal'].append(f'LC(C={round(C_opt_lc,2)})')
+        results['ece'].append(ece_lc)
+        results['adaece'].append(adaece_lc)
+        results['cece'].append(cece_lc)
+        results['nll'].append(nll_lc)
+        results['accuracy'].append(accuracy_lc)
 
     # FC
     if "FC" in run_methods:
@@ -352,6 +367,25 @@ if __name__ == "__main__":
         results['cece'].append(cece_ts)
         results['nll'].append(nll_ts)
         results['accuracy'].append(accuracy_ts)
+
+    # LC then TS
+    if "LC_TS" in run_methods:
+        args.cal = 'TS'
+        cbt = calibrator(args).cuda()
+        cbt.train(logits_val_lc, labels_val_lc)
+        logits_lc_ts = cbt(logits_test_lc)
+        ece_lc_ts = ece_criterion(logits_lc_ts, labels_test_lc).item()
+        adaece_lc_ts = adaece_criterion(logits_lc_ts, labels_test_lc).item()
+        cece_lc_ts = cece_criterion(logits_lc_ts, labels_test_lc).item()
+        nll_lc_ts = nll_criterion(logits_lc_ts, labels_test_lc).item()
+        accuracy_lc_ts = logits_lc_ts.argmax(dim=1).eq(labels_test_lc).float().mean().item()
+        print(f"LC_TS: ECE={round(ece_lc_ts*100, 2)}, Accuracy={round(accuracy_lc_ts*100, 2)}")
+        results['cal'].append('LC_TS')
+        results['ece'].append(ece_lc_ts)
+        results['adaece'].append(adaece_lc_ts)
+        results['cece'].append(cece_lc_ts)
+        results['nll'].append(nll_lc_ts)
+        results['accuracy'].append(accuracy_lc_ts)
 
     # FC then TS
     if "FC_TS" in run_methods:
@@ -552,32 +586,34 @@ if __name__ == "__main__":
         'Accuracy': [round(i*100, 2) for i in results['accuracy']]
     }, index=results['cal'])
     print("\n",results_table,"\n")
-    result_str = f"ECE Latex scipts: " \
-    + f"{round(ece*100, 2):.2f}&\cellgray{round(ece_fc*100, 2):.2f}({round(C_opt_fc,2)}){' greendown' if ece_fc<ece else ' redup'}" \
-    + f"&{round(ece_ts*100, 2):.2f}&\cellgray{round(ece_fc_ts*100, 2):.2f}{' greendown' if ece_fc_ts<ece_ts else ' redup'}" \
-    + f"&{round(ece_ets*100, 2):.2f}&\cellgray{round(ece_fc_ets*100, 2):.2f}{' greendown' if ece_fc_ets<ece_ets else ' redup'}" \
-    + f"&{round(ece_pts*100, 2):.2f}&\cellgray{round(ece_fc_pts*100, 2):.2f}{' greendown' if ece_fc_pts<ece_pts else ' redup'}" \
-    + f"&{round(ece_cts*100, 2):.2f}&\cellgray{round(ece_fc_cts*100, 2):.2f}{' greendown' if ece_fc_cts<ece_cts else ' redup'}" \
-    + f"&{round(ece_gc*100, 2):.2f}&\cellgray{round(ece_fc_gc*100, 2):.2f}{' greendown' if ece_fc_gc<ece_gc else ' redup'}" \
-    + f"\\\\"
-    # replace textcolor with \textcolor; replace blacktriangle with \blacktriangle
-    result_str = result_str.replace('greendown', '\\greendown').replace('redup', '\\redup')
-    # highlight the lowest results
-    lowest_results = "{:.2f}".format(round(min(results['ece'])*100,2))
-    result_str = result_str.replace(lowest_results, '\\textbf{'+lowest_results+'}')
-    print(result_str)
 
-    result_str = f"AdaECE Latex scipts: " \
-    + f"{round(adaece*100, 2):.2f}&\cellgray{round(adaece_fc*100, 2):.2f}({round(C_opt_fc,2)}){' greendown' if adaece_fc<adaece else ' redup'}" \
-    + f"&{round(adaece_ts*100, 2):.2f}&\cellgray{round(adaece_fc_ts*100, 2):.2f}{' greendown' if adaece_fc_ts<adaece_ts else ' redup'}" \
-    + f"&{round(adaece_ets*100, 2):.2f}&\cellgray{round(adaece_fc_ets*100, 2):.2f}{' greendown' if adaece_fc_ets<adaece_ets else ' redup'}" \
-    + f"&{round(adaece_pts*100, 2):.2f}&\cellgray{round(adaece_fc_pts*100, 2):.2f}{' greendown' if adaece_fc_pts<adaece_pts else ' redup'}" \
-    + f"&{round(adaece_cts*100, 2):.2f}&\cellgray{round(adaece_fc_cts*100, 2):.2f}{' greendown' if adaece_fc_cts<adaece_cts else ' redup'}" \
-    + f"&{round(adaece_gc*100, 2):.2f}&\cellgray{round(adaece_fc_gc*100, 2):.2f}{' greendown' if adaece_fc_gc<adaece_gc else ' redup'}" \
-    + f"\\\\"
-    # replace textcolor with \textcolor; replace blacktriangle with \blacktriangle
-    result_str = result_str.replace('greendown', '\\greendown').replace('redup', '\\redup')
-    # highlight the lowest results
-    lowest_results = "{:.2f}".format(round(min(results['ece'])*100,2))
-    result_str = result_str.replace(lowest_results, '\\textbf{'+lowest_results+'}')
-    print(result_str)
+    # # print latex scripts
+    # result_str = f"ECE Latex scipts: " \
+    # + f"{round(ece*100, 2):.2f}&\cellgray{round(ece_fc*100, 2):.2f}({round(C_opt_fc,2)}){' greendown' if ece_fc<ece else ' redup'}" \
+    # + f"&{round(ece_ts*100, 2):.2f}&\cellgray{round(ece_fc_ts*100, 2):.2f}{' greendown' if ece_fc_ts<ece_ts else ' redup'}" \
+    # + f"&{round(ece_ets*100, 2):.2f}&\cellgray{round(ece_fc_ets*100, 2):.2f}{' greendown' if ece_fc_ets<ece_ets else ' redup'}" \
+    # + f"&{round(ece_pts*100, 2):.2f}&\cellgray{round(ece_fc_pts*100, 2):.2f}{' greendown' if ece_fc_pts<ece_pts else ' redup'}" \
+    # + f"&{round(ece_cts*100, 2):.2f}&\cellgray{round(ece_fc_cts*100, 2):.2f}{' greendown' if ece_fc_cts<ece_cts else ' redup'}" \
+    # + f"&{round(ece_gc*100, 2):.2f}&\cellgray{round(ece_fc_gc*100, 2):.2f}{' greendown' if ece_fc_gc<ece_gc else ' redup'}" \
+    # + f"\\\\"
+    # # replace textcolor with \textcolor; replace blacktriangle with \blacktriangle
+    # result_str = result_str.replace('greendown', '\\greendown').replace('redup', '\\redup')
+    # # highlight the lowest results
+    # lowest_results = "{:.2f}".format(round(min(results['ece'])*100,2))
+    # result_str = result_str.replace(lowest_results, '\\textbf{'+lowest_results+'}')
+    # print(result_str)
+
+    # result_str = f"AdaECE Latex scipts: " \
+    # + f"{round(adaece*100, 2):.2f}&\cellgray{round(adaece_fc*100, 2):.2f}({round(C_opt_fc,2)}){' greendown' if adaece_fc<adaece else ' redup'}" \
+    # + f"&{round(adaece_ts*100, 2):.2f}&\cellgray{round(adaece_fc_ts*100, 2):.2f}{' greendown' if adaece_fc_ts<adaece_ts else ' redup'}" \
+    # + f"&{round(adaece_ets*100, 2):.2f}&\cellgray{round(adaece_fc_ets*100, 2):.2f}{' greendown' if adaece_fc_ets<adaece_ets else ' redup'}" \
+    # + f"&{round(adaece_pts*100, 2):.2f}&\cellgray{round(adaece_fc_pts*100, 2):.2f}{' greendown' if adaece_fc_pts<adaece_pts else ' redup'}" \
+    # + f"&{round(adaece_cts*100, 2):.2f}&\cellgray{round(adaece_fc_cts*100, 2):.2f}{' greendown' if adaece_fc_cts<adaece_cts else ' redup'}" \
+    # + f"&{round(adaece_gc*100, 2):.2f}&\cellgray{round(adaece_fc_gc*100, 2):.2f}{' greendown' if adaece_fc_gc<adaece_gc else ' redup'}" \
+    # + f"\\\\"
+    # # replace textcolor with \textcolor; replace blacktriangle with \blacktriangle
+    # result_str = result_str.replace('greendown', '\\greendown').replace('redup', '\\redup')
+    # # highlight the lowest results
+    # lowest_results = "{:.2f}".format(round(min(results['ece'])*100,2))
+    # result_str = result_str.replace(lowest_results, '\\textbf{'+lowest_results+'}')
+    # print(result_str)

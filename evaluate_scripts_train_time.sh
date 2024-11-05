@@ -1,4 +1,6 @@
-# # cifar10
+conda activate feature-clipping
+
+# cifar10
 CUDA_VISIBLE_DEVICES=0 python evaluate.py --cverror nll --dataset cifar10 --model-name resnet50 --loss cross_entropy
 CUDA_VISIBLE_DEVICES=0 python evaluate.py --cverror nll --dataset cifar10 --model-name resnet50 --loss brier_score
 CUDA_VISIBLE_DEVICES=0 python evaluate.py --cverror nll --dataset cifar10 --model-name resnet50 --loss mmce

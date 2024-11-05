@@ -16,6 +16,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 def get_train_valid_loader(batch_size,
                            augment,
                            random_seed,
+                           data_dir='/share/datasets/',
                            valid_size=0.1,
                            shuffle=True,
                            num_workers=4,
@@ -70,15 +71,14 @@ def get_train_valid_loader(batch_size,
         ])
 
     # load the dataset
-    data_dir = './data'
     train_dataset = datasets.CIFAR100(
         root=data_dir, train=True,
-        download=False, transform=train_transform,
+        download=True, transform=train_transform,
     )
 
     valid_dataset = datasets.CIFAR100(
         root=data_dir, train=True,
-        download=False, transform=valid_transform,
+        download=True, transform=valid_transform,
     )
 
     num_train = len(train_dataset)
@@ -93,7 +93,7 @@ def get_train_valid_loader(batch_size,
     if get_val_temp > 0:
         valid_temp_dataset = datasets.CIFAR100(
             root=data_dir, train=True,
-            download=False, transform=valid_transform,
+            download=True, transform=valid_transform,
         )
         split = int(np.floor(get_val_temp * split))
         valid_idx, valid_temp_idx = valid_idx[split:], valid_idx[:split]
@@ -121,6 +121,7 @@ def get_train_valid_loader(batch_size,
 
 
 def get_test_loader(batch_size,
+                    data_dir='/share/datasets/',
                     shuffle=True,
                     num_workers=4,
                     pin_memory=False):
@@ -151,10 +152,9 @@ def get_test_loader(batch_size,
         normalize,
     ])
 
-    data_dir = './data'
     dataset = datasets.CIFAR100(
         root=data_dir, train=False,
-        download=False, transform=transform,
+        download=True, transform=transform,
     )
 
     data_loader = torch.utils.data.DataLoader(
