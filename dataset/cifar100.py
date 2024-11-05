@@ -71,6 +71,10 @@ def get_train_valid_loader(batch_size,
         ])
 
     # load the dataset
+<<<<<<< HEAD
+=======
+    data_dir = '/share/datasets'
+>>>>>>> e6dc57ba78e0ffac5d4ee24fd29f57e5a0d89dfd
     train_dataset = datasets.CIFAR100(
         root=data_dir, train=True,
         download=True, transform=train_transform,
@@ -152,6 +156,10 @@ def get_test_loader(batch_size,
         normalize,
     ])
 
+<<<<<<< HEAD
+=======
+    data_dir = '/share/datasets'
+>>>>>>> e6dc57ba78e0ffac5d4ee24fd29f57e5a0d89dfd
     dataset = datasets.CIFAR100(
         root=data_dir, train=False,
         download=True, transform=transform,

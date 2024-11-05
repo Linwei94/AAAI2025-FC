@@ -1,30 +1,24 @@
-"""
-Create train, valid, test iterators for CIFAR-10.
-Train set size: 45000
-Val set size: 5000
-Test set size: 10000
-"""
 
+import os
 import torch
 import numpy as np
 
 from torchvision import datasets
 from torchvision import transforms
+from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 
 
 def get_train_valid_loader(batch_size,
                            augment,
                            random_seed,
-                        data_dir='/share/datasets/',
                            valid_size=0.1,
                            shuffle=True,
                            num_workers=4,
-                           pin_memory=False,
-                           get_val_temp=0):
+                           pin_memory=False):
     """
     Utility function for loading and returning train and valid
-    multi-process iterators over the CIFAR-10 dataset. 
+    multi-process iterators over the SVHN dataset. 
     Params:
     ------
     - batch_size: how many samples per batch to load.
@@ -37,8 +31,6 @@ def get_train_valid_loader(batch_size,
     - num_workers: number of subprocesses to use when loading the dataset.
     - pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
       True if using GPU.
-    - get_val_temp: set to 1 if temperature is to be set on a separate
-                    val set other than normal val set.
     Returns
     -------
     - train_loader: training set iterator.
@@ -54,30 +46,31 @@ def get_train_valid_loader(batch_size,
 
     # define transforms
     valid_transform = transforms.Compose([
-            transforms.ToTensor(),
-            normalize,
+        transforms.ToTensor(),
+        normalize,
     ])
-    if augment:
-        train_transform = transforms.Compose([
-            transforms.RandomCrop(32, padding=4),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            normalize,
-        ])
-    else:
-        train_transform = transforms.Compose([
-            transforms.ToTensor(),
-            normalize,
-        ])
+    #if augment:
+    #    train_transform = transforms.Compose([
+    #        transforms.RandomCrop(32, padding=4),
+    #        transforms.RandomHorizontalFlip(),
+    #        transforms.ToTensor(),
+    #        normalize,
+    #    ])
+    #else:
+    #    train_transform = transforms.Compose([
+    #        transforms.ToTensor(),
+    #        normalize,
+    #    ])
 
     # load the dataset
-    train_dataset = datasets.CIFAR10(
-        root=data_dir, train=True,
-        download=True, transform=train_transform,
+    data_dir = '/share/datasets'
+    train_dataset = datasets.SVHN(
+        root=data_dir, split='train',
+        download=True, transform=valid_transform,
     )
 
-    valid_dataset = datasets.CIFAR10(
-        root=data_dir, train=True,
+    valid_dataset = datasets.SVHN(
+        root=data_dir, split='train',
         download=True, transform=valid_transform,
     )
 
@@ -90,19 +83,6 @@ def get_train_valid_loader(batch_size,
         np.random.shuffle(indices)
 
     train_idx, valid_idx = indices[split:], indices[:split]
-    if get_val_temp > 0:
-        valid_temp_dataset = datasets.CIFAR10(
-            root=data_dir, train=True,
-            download=True, transform=valid_transform,
-        )
-        split = int(np.floor(get_val_temp * split))
-        valid_idx, valid_temp_idx = valid_idx[split:], valid_idx[:split]
-        valid_temp_sampler = SubsetRandomSampler(valid_temp_idx)
-        valid_temp_loader = torch.utils.data.DataLoader(
-            valid_temp_dataset, batch_size=batch_size, sampler=valid_temp_sampler,
-            num_workers=num_workers, pin_memory=pin_memory,
-        )
-
     train_sampler = SubsetRandomSampler(train_idx)
     valid_sampler = SubsetRandomSampler(valid_idx)
 
@@ -114,21 +94,17 @@ def get_train_valid_loader(batch_size,
         valid_dataset, batch_size=batch_size, sampler=valid_sampler,
         num_workers=num_workers, pin_memory=pin_memory,
     )
-    if get_val_temp > 0:
-        return (train_loader, valid_loader, valid_temp_loader)
-    else:
-        return (train_loader, valid_loader)
+
+    return (train_loader, valid_loader)
 
 
 def get_test_loader(batch_size,
-                    data_dir='/share/datasets/',
-                    shuffle=False,
+                    shuffle=True,
                     num_workers=4,
-                    pin_memory=False,
-                    drop_index=None):
+                    pin_memory=False):
     """
     Utility function for loading and returning a multi-process
-    test iterator over the CIFAR-10 dataset.
+    test iterator over the SVHN dataset.
     If using CUDA, num_workers should be set to 1 and pin_memory to True.
     Params
     ------
@@ -152,12 +128,9 @@ def get_test_loader(batch_size,
         normalize,
     ])
 
-<<<<<<< HEAD
-=======
     data_dir = '/share/datasets'
->>>>>>> e6dc57ba78e0ffac5d4ee24fd29f57e5a0d89dfd
-    dataset = datasets.CIFAR10(
-        root=data_dir, train=False,
+    dataset = datasets.SVHN(
+        root=data_dir, split='test',
         download=True, transform=transform,
     )
 
