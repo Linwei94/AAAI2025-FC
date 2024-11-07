@@ -93,7 +93,6 @@ class ResNet(nn.Module):
         out = self.layer4(out)
         out = F.avg_pool2d(out, 4)
         feature = out.view(out.size(0), -1)
-
         out = self.fc(feature) / self.temp
         if return_feature:
             return out, feature

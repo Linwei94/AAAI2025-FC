@@ -152,10 +152,6 @@ def get_test_loader(batch_size,
         normalize,
     ])
 
-<<<<<<< HEAD
-=======
-    data_dir = '/share/datasets'
->>>>>>> e6dc57ba78e0ffac5d4ee24fd29f57e5a0d89dfd
     dataset = datasets.CIFAR10(
         root=data_dir, train=False,
         download=True, transform=transform,
