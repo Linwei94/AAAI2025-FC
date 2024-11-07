@@ -11,7 +11,7 @@ from torchvision import transforms
 from torch.utils.data import DataLoader, random_split
 import random
 import os
-
+from tqdm import tqdm
 # Import dataloaders
 import dataset.cifar10 as cifar10
 import dataset.cifar100 as cifar100
@@ -111,7 +111,7 @@ def get_logits_labels(data_loader, net, return_feature=False):
     net.eval()
     if return_feature:
         with torch.no_grad():
-            for data, label in data_loader:
+            for data, label in tqdm(data_loader):
                 data = data.cuda()
                 logits, features = net(data, return_feature=return_feature)
                 logits_list.append(logits)
@@ -124,7 +124,7 @@ def get_logits_labels(data_loader, net, return_feature=False):
         return logits, labels, features
     else:
         with torch.no_grad():
-            for data, label in data_loader:
+            for data, label in tqdm(data_loader):
                 data = data.cuda()
                 logits = net(data)
                 logits_list.append(logits)
@@ -234,19 +234,22 @@ if __name__ == "__main__":
 
     # if file not exist, calculated logits, feature and labels
     logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}.pt'
-    if not os.path.exists(logit_path):
-        os.makedirs(os.path.dirname(logit_path), exist_ok=True)
-        logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
-        logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
+    # if not os.path.exists(logit_path):
+    #     os.makedirs(os.path.dirname(logit_path), exist_ok=True)
+    #     logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
+    #     logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
 
-        torch.save({
-            'logits_val': logits_val,
-            'labels_val': labels_val,
-            'features_val': features_val,
-            'logits_test': logits_test,
-            'labels_test': labels_test,
-            'features_test': features_test,
-        }, logit_path)
+    #     torch.save({
+    #         'logits_val': logits_val,
+    #         'labels_val': labels_val,
+    #         'features_val': features_val,
+    #         'logits_test': logits_test,
+    #         'labels_test': labels_test,
+    #         'features_test': features_test,
+    #     }, logit_path)
+
+    logits_val, labels_val, features_val = get_logits_labels(val_loader, net, return_feature=True)
+    logits_test, labels_test, features_test = get_logits_labels(test_loader, net, return_feature=True)
 
     # load logits, feature and labels
     data = torch.load(logit_path, weights_only=False)
@@ -257,37 +260,37 @@ if __name__ == "__main__":
     labels_test = data['labels_test']
     features_test = data['features_test']
 
-    '''
-    practice the feature clipping calibration
-    '''
-    fc_cal = FeatureClippingCalibrator(net, cross_validate=cross_validation_error)
-    C_opt_fc = fc_cal.set_feature_clip(features_val, logits_val, labels_val)
+    # '''
+    # practice the feature clipping calibration
+    # '''
+    # fc_cal = FeatureClippingCalibrator(net, cross_validate=cross_validation_error)
+    # C_opt_fc = fc_cal.set_feature_clip(features_val, logits_val, labels_val)
 
-    logits_val_fc, labels_val_fc, features_val_fc = fc_cal(features_val, C_opt_fc), labels_val, fc_cal.feature_clipping(features_val, C_opt_fc)
-    logits_test_fc, labels_test_fc, features_test_fc = fc_cal(features_test, C_opt_fc), labels_test, fc_cal.feature_clipping(features_test, C_opt_fc)
-    data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
-    data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
-    logits_val_fc = data['logits_val_fc']
-    labels_val_fc = data['labels_val_fc']
-    features_val_fc = data['features_val_fc']
-    logits_test_fc = data['logits_test_fc']
-    labels_test_fc = data['labels_test_fc']
-    features_test_fc = data['features_test_fc']
+    # logits_val_fc, labels_val_fc, features_val_fc = fc_cal(features_val, C_opt_fc), labels_val, fc_cal.feature_clipping(features_val, C_opt_fc)
+    # logits_test_fc, labels_test_fc, features_test_fc = fc_cal(features_test, C_opt_fc), labels_test, fc_cal.feature_clipping(features_test, C_opt_fc)
+    # data['logits_val_fc'], data['labels_val_fc'], data['features_val_fc'] = logits_val_fc.detach(), labels_val_fc.detach(), features_val_fc.detach()
+    # data['logits_test_fc'], data['labels_test_fc'], data['features_test_fc'] = logits_test_fc.detach(), labels_test_fc.detach(), features_test_fc.detach()
+    # logits_val_fc = data['logits_val_fc']
+    # labels_val_fc = data['labels_val_fc']
+    # features_val_fc = data['features_val_fc']
+    # logits_test_fc = data['logits_test_fc']
+    # labels_test_fc = data['labels_test_fc']
+    # features_test_fc = data['features_test_fc']
 
-    '''
-    practice the logit clipping calibration
-    '''
-    lc_cal = LogitClippingCalibrator()
-    C_opt_lc = lc_cal.fit(logits_val, labels_val)
-    logits_val_lc = lc_cal.calibrate(logits_val, return_logits=True)
-    logits_test_lc = lc_cal.calibrate(logits_test, return_logits=True)
-    labels_val_lc = data['labels_val']
-    labels_test_lc = data['labels_test']
-    data['logits_val_lc'], data['labels_val_lc'] = logits_val_lc.detach(), labels_val_lc.detach()
-    data['logits_test_lc'], data['labels_test_lc'] = logits_test_lc.detach(), labels_test_lc.detach()
+    # '''
+    # practice the logit clipping calibration
+    # '''
+    # lc_cal = LogitClippingCalibrator()
+    # C_opt_lc = lc_cal.fit(logits_val, labels_val)
+    # logits_val_lc = lc_cal.calibrate(logits_val, return_logits=True)
+    # logits_test_lc = lc_cal.calibrate(logits_test, return_logits=True)
+    # labels_val_lc = data['labels_val']
+    # labels_test_lc = data['labels_test']
+    # data['logits_val_lc'], data['labels_val_lc'] = logits_val_lc.detach(), labels_val_lc.detach()
+    # data['logits_test_lc'], data['labels_test_lc'] = logits_test_lc.detach(), labels_test_lc.detach()
 
-    fc_logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}_fc.pt'
-    torch.save(data, fc_logit_path)
+    # fc_logit_path = f'pre_calculated_logits/{args.dataset}/{args.model_name}_{args.loss}_fc.pt'
+    # torch.save(data, fc_logit_path)
 
     
 
@@ -305,7 +308,7 @@ if __name__ == "__main__":
         "nll":[],
         "accuracy":[]
     }
-    run_methods = ['Vanilla', 'TS', 'FC', 'FC_TS']
+    run_methods = ['Vanilla']
     # run_methods = ['Vanilla', 'LC', 'FC', 'LC_TS', 'FC_TS', 'ETS', 'FC_ETS', 'PTS', 'FC_PTS', 'CTS', 'FC_CTS', 'GC', 'FC_GC']
     # vanilla
     if "Vanilla" in run_methods:
