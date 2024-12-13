@@ -20,6 +20,7 @@ All logits and features and extracted from the following models:
 
 ### Dependencies
 `conda create -n feature-clipping python=3.10`
+
 `python -m pip install -r requirements.txt`
 
 ### Evalutation
