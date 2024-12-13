@@ -246,7 +246,7 @@ if __name__ == "__main__":
             'logits_test': logits_test,
             'labels_test': labels_test,
             'features_test': features_test,
-        }, logit_path)
+        }, logit_path)    
 
     # load logits, feature and labels
     data = torch.load(logit_path, weights_only=False)

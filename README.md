@@ -19,6 +19,7 @@ All logits and features and extracted from the following models:
   - ViT-L-16: torchvision.models.vit_l_16(weights=torchvision.models.ViT_L_16_Weights.IMAGENET1K_V1)
 
 ### Dependencies
+`conda create -n feature-clipping python=3.10`
 `python -m pip install -r requirements.txt`
 
 ### Evalutation
